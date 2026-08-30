@@ -1,0 +1,25 @@
+{
+  "name": "coffeeshop",
+  "version": "1.0.0",
+  "description": "API MERN para CoffeeShop.",
+  "main": "src/Api/server.js",
+  "scripts": {
+    "start": "node src/Api/server.js",
+    "dev": "node --watch src/Api/server.js",
+    "ui:dev": "npm --prefix src/UI run dev",
+    "ui:build": "npm --prefix src/UI run build",
+    "host": "npm --prefix src/AppHost run host",
+    "host:no-browser": "npm --prefix src/AppHost run host:no-browser",
+    "setup": "npm install --prefix Common && npm install && npm install --prefix src/UI && npm install --prefix src/AppHost"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@coffeeshop/common": "file:./Common",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.0"
+  }
+}

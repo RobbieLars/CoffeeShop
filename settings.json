@@ -1,0 +1,7 @@
+{
+  "rest-client.environmentVariables": {
+      "$shared": {
+          "TemplateURL": "http://localhost:5003/api"
+      }
+  }
+}

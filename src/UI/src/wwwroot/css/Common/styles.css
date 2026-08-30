@@ -1,0 +1,64 @@
+:root {
+    --color-background: #080b12;
+    --color-surface: #0d121d;
+    --color-surface-hover: #161e2c;
+    --color-text: #e8edf7;
+    --color-text-muted: #8e9bb0;
+    --color-border: #1c2638;
+    --color-primary: #6f5cff;
+    --color-on-primary: #ffffff;
+    --color-danger: #ef4444;
+    --color-success: #43d9a3;
+    --control-radius: 0.65rem;
+    --panel-radius: 0.85rem;
+    --font-size-root: 16px;
+    --font-family-base:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+
+    color: var(--color-text);
+    background: var(--color-background);
+    font-family:
+        var(--font-family-base);
+    font-size: var(--font-size-root);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--color-text);
+    background: var(--color-background);
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+.vaultcore-dashboard {
+    --app-layout-background: var(--color-background);
+    --app-layout-surface: var(--color-surface);
+    --app-layout-text: var(--color-text);
+    --app-layout-muted: var(--color-text-muted);
+    --app-layout-primary: var(--color-primary);
+    --app-layout-on-primary: var(--color-on-primary);
+    --app-layout-border: var(--color-border);
+    --app-layout-hover: var(--color-surface-hover);
+    --app-layout-danger: var(--color-danger);
+    --app-layout-online: var(--color-success);
+    --menu-primary: var(--color-primary);
+    --menu-heading: var(--color-text);
+    --menu-border: var(--color-border);
+    --menu-background: var(--color-surface);
+    --menu-text: var(--color-text);
+    --menu-hover: var(--color-surface-hover);
+}

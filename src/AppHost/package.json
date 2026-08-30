@@ -1,0 +1,28 @@
+{
+  "name": "@coffeeshop/apphost",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "scripts": {
+    "restore": "aspire restore",
+    "lint": "eslint apphost.mts scripts",
+    "build": "tsc -p tsconfig.apphost.json",
+    "host": "node scripts/run-apphost.mjs",
+    "host:no-browser": "node scripts/run-apphost.mjs --no-browser"
+  },
+  "dependencies": {
+    "vscode-jsonrpc": "^8.2.0"
+  },
+  "devDependencies": {
+    "@microsoft/aspire-cli": "^13.5.3",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.0.3",
+    "open": "^11.0.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.1"
+  }
+}

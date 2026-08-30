@@ -1,0 +1,25 @@
+{
+  "name": "@coffeeshop/common",
+  "version": "1.0.0",
+  "description": "Código compartido por los módulos de CoffeeShop.",
+  "private": true,
+  "type": "commonjs",
+  "exports": {
+    "./Constants/*": "./Constants/*.js",
+    "./DTOs/*": "./DTOs/*.js",
+    "./Email/*": "./Email/*.js",
+    "./Enum/*": "./Enum/*.js",
+    "./Errors/*": "./Errors/*.js",
+    "./Helpers/*": "./Helpers/*.js",
+    "./Http/*": "./Http/*.js",
+    "./Http/Express/*": "./Http/Express/*.js",
+    "./Services/*": "./Services/*.js",
+    "./Security/*": "./Security/*.js",
+    "./Specifications/*": "./Specifications/*.js",
+    "./Storage/*": "./Storage/*.js",
+    "./Validators/*": "./Validators/*.js"
+  },
+  "dependencies": {
+    "nodemailer": "^9.0.6"
+  }
+}
