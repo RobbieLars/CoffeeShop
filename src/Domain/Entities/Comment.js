@@ -3,17 +3,17 @@ class Comment {
     constructor({
         id,
         userId,
+        subject,
         message,
         photoPublicId = null,
-        edited = false,
-        enabled = true
+        edited = false
     } = {}) {
         this.id = id;
         this.userId = userId;
+        this.subject = subject;
         this.message = message;
         this.photoPublicId = photoPublicId;
         this.edited = edited;
-        this.enabled = enabled;
     }
 }
 

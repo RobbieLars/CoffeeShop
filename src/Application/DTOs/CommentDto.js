@@ -4,10 +4,12 @@ const AuditMetadataDto = require('@coffeeshop/common/DTOs/AuditMetadataDto');
 class CreateCommentDto {
     constructor({
         userId,
+        subject,
         message,
         photoPublicId
     } = {}) {
         this.userId = userId;
+        this.subject = subject;
         this.message = message;
         this.photoPublicId = photoPublicId;
     }
@@ -17,22 +19,24 @@ class CreateCommentDto {
 class UpdateCommentDto {
     constructor({
         userId,
+        subject,
         message,
-        photoPublicId,
-        enabled
+        photoPublicId
     } = {}) {
         this.userId = userId;
+        this.subject = subject;
         this.message = message;
         this.photoPublicId = photoPublicId;
-        this.enabled = enabled;
     }
 }
 
 // DTO para actualización parcial (Patch) del mensaje
 class PatchCommentMessageDto {
     constructor({
+        subject,
         message
     } = {}) {
+        this.subject = subject;
         this.message = message;
     }
 }
@@ -44,21 +48,23 @@ class CommentListItemDto {
         userId,
         userUsername = '',
         userPhotoProfilePublicId = '',
+        subject,
         message,
         photoPublicId,
         edited = false,
-        enabled = true,
-        createdAt = null
+        createdAt = null,
+        actions = []
     } = {}) {
         this.id = id;
         this.userId = userId;
         this.userUsername = userUsername;
         this.userPhotoProfilePublicId = userPhotoProfilePublicId;
+        this.subject = subject;
         this.message = message;
         this.photoPublicId = photoPublicId;
         this.edited = edited;
-        this.enabled = enabled;
         this.createdAt = createdAt;
+        this.actions = Array.isArray(actions) ? actions : [];
     }
 }
 
@@ -69,20 +75,20 @@ class CommentDetailDto {
         userId,
         userUsername = '',
         userPhotoProfilePublicId = '',
+        subject,
         message,
         photoPublicId,
         edited = false,
-        enabled = true,
         audit = null
     } = {}) {
         this.id = id;
         this.userId = userId;
         this.userUsername = userUsername;
         this.userPhotoProfilePublicId = userPhotoProfilePublicId;
+        this.subject = subject;
         this.message = message;
         this.photoPublicId = photoPublicId;
         this.edited = edited;
-        this.enabled = enabled;
 
         if (audit) {
             this.audit = audit instanceof AuditMetadataDto
