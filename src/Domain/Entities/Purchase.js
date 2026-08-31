@@ -4,18 +4,18 @@ class Purchase {
         id,
         productId,
         userId,
+        petId,
         day,
         photoPublicId = null,
-        createdById = null,
-        modifiedById = null
+        enabled = true
     } = {}) {
         this.id = id;
         this.productId = productId;
         this.userId = userId;
+        this.petId = petId;
         this.day = day;
         this.photoPublicId = photoPublicId;
-        this.createdById = createdById;
-        this.modifiedById = modifiedById;
+        this.enabled = enabled;
     }
 }
 

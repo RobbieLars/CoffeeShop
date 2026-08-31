@@ -7,9 +7,7 @@ class Product {
         imgPublicId,
         price,
         url,
-        enabled = true,
-        createdById = null,
-        modifiedById = null
+        enabled = true
     } = {}) {
         this.id = id;
         this.name = name;
@@ -18,8 +16,6 @@ class Product {
         this.price = price;
         this.url = url;
         this.enabled = enabled;
-        this.createdById = createdById;
-        this.modifiedById = modifiedById;
     }
 }
 

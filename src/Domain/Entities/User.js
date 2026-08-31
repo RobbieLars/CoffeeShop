@@ -4,7 +4,6 @@ class User {
         id,
         photoProfilePublicId = '',
         username,
-        email = null,
         password = undefined,
         verified = false,
         lockedUntil = null,
@@ -17,7 +16,6 @@ class User {
         this.id = id;
         this.photoProfilePublicId = photoProfilePublicId;
         this.username = username;
-        this.email = email;
         this.password = password;
         this.verified = verified;
         this.lockedUntil = lockedUntil;

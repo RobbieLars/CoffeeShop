@@ -4,16 +4,12 @@ class Role {
         id,
         name,
         description,
-        enabled = true,
-        createdById = null,
-        modifiedById = null
+        enabled = true
     } = {}) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.enabled = enabled;
-        this.createdById = createdById;
-        this.modifiedById = modifiedById;
     }
 }
 

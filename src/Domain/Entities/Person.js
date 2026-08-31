@@ -5,13 +5,19 @@ class Person {
         name,
         secondName = '',
         lastName,
-        secondLastName = ''
+        secondLastName = '',
+        birthDate = null,
+        gender = null,
+        email = null,
     } = {}) {
         this.id = id;
         this.name = name;
         this.secondName = secondName;
         this.lastName = lastName;
         this.secondLastName = secondLastName;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.email = email;
     }
 }
 

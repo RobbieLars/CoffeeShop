@@ -5,15 +5,15 @@ class Comment {
         userId,
         message,
         photoPublicId = null,
-        createdById = null,
-        modifiedById = null
+        edited = false,
+        enabled = true
     } = {}) {
         this.id = id;
         this.userId = userId;
         this.message = message;
         this.photoPublicId = photoPublicId;
-        this.createdById = createdById;
-        this.modifiedById = modifiedById;
+        this.edited = edited;
+        this.enabled = enabled;
     }
 }
 

@@ -18,6 +18,7 @@
   "type": "commonjs",
   "dependencies": {
     "@coffeeshop/common": "file:./Common",
+    "argon2": "^0.44.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "mongoose": "^9.2.0"

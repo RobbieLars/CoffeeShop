@@ -10,6 +10,24 @@ const errorHandler = require('@coffeeshop/common/Http/Express/errorHandler');
 // Contenedor de dependencias
 const buildDependencyContainer = require('../Infrastructure/dependencyContainer');
 
+// Controllers
+const RoleController = require('./Controllers/RoleController');
+const PersonController = require('./Controllers/PersonController');
+const UserController = require('./Controllers/UserController');
+const PetController = require('./Controllers/PetController');
+const ProductController = require('./Controllers/ProductController');
+const CommentController = require('./Controllers/CommentController');
+const PurchaseController = require('./Controllers/PurchaseController');
+
+// Routes
+const roleRoutes = require('./Routes/RoleRoutes');
+const personRoutes = require('./Routes/PersonRoutes');
+const userRoutes = require('./Routes/UserRoutes');
+const petRoutes = require('./Routes/PetRoutes');
+const productRoutes = require('./Routes/ProductRoutes');
+const commentRoutes = require('./Routes/CommentRoutes');
+const purchaseRoutes = require('./Routes/PurchaseRoutes');
+
 async function server() {
     let httpServer;
 
@@ -21,6 +39,15 @@ async function server() {
         // Inyeccion de dependencia
         // -----------------------------------------------------------------------------
         const container = buildDependencyContainer();
+        const roleController = new RoleController(container.services.roleService);
+        const personController = new PersonController(container.services.personService);
+        const userController = new UserController(container.services.userService);
+        const petController = new PetController(container.services.petService);
+        const productController = new ProductController(container.services.productService);
+        const commentController = new CommentController(container.services.commentService);
+        const purchaseController = new PurchaseController(
+            container.services.purchaseService
+        );
 
         // -----------------------------------------------------------------------------
         // Configuracion del servidor Express
@@ -50,13 +77,21 @@ async function server() {
             });
         });
 
+        app.use('/api/role', roleRoutes(roleController));
+        app.use('/api/person', personRoutes(personController));
+        app.use('/api/user', userRoutes(userController));
+        app.use('/api/pet', petRoutes(petController));
+        app.use('/api/product', productRoutes(productController));
+        app.use('/api/comment', commentRoutes(commentController));
+        app.use('/api/purchase', purchaseRoutes(purchaseController));
+
         app.use((req, res) => {
             return res.status(404).json({
                 message: 'Recurso no encontrado.'
             });
         });
 
-        app.use(errorHandler);
+        app.use(errorHandler(console));
 
         const port = EnvParser.getPositiveInteger('PORT', 5003);
 
