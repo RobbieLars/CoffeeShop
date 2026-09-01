@@ -16,7 +16,6 @@ class CommentController {
         this.GetPagedAsync = this.GetPagedAsync.bind(this);
         this.GetByIdAsync = this.GetByIdAsync.bind(this);
         this.GetByUserIdAsync = this.GetByUserIdAsync.bind(this);
-        this.GetUserCommentsDeleteImpactAsync = this.GetUserCommentsDeleteImpactAsync.bind(this);
         this.CreateAsync = this.CreateAsync.bind(this);
         this.UpdateAsync = this.UpdateAsync.bind(this);
         this.PatchMessageAsync = this.PatchMessageAsync.bind(this);
@@ -52,14 +51,6 @@ class CommentController {
     // -----------------------------------------------------------------------------
     async GetByUserIdAsync(req, res) {
         const result = await this._commentService.GetByUserIdAsync(req.params.userId);
-        return res.status(200).json(result);
-    }
-
-    // -----------------------------------------------------------------------------
-    // GetUserCommentsDeleteImpactAsync: Obtiene el impacto de comentarios de un usuario.
-    // -----------------------------------------------------------------------------
-    async GetUserCommentsDeleteImpactAsync(req, res) {
-        const result = await this._commentService.GetUserCommentsDeleteImpactAsync(req.params.userId);
         return res.status(200).json(result);
     }
 

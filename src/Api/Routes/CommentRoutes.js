@@ -15,9 +15,6 @@ module.exports = (commentController) => {
     // GetByUserIdAsync: GET /api/comment/user/:userId
     router.get('/user/:userId', asyncHandler(commentController.GetByUserIdAsync));
 
-    // GetUserCommentsDeleteImpactAsync: GET /api/comment/user/:userId/delete-impact
-    router.get('/user/:userId/delete-impact', asyncHandler(commentController.GetUserCommentsDeleteImpactAsync));
-
     // GetByIdAsync: GET /api/comment/:id
     router.get('/:id', asyncHandler(commentController.GetByIdAsync));
 

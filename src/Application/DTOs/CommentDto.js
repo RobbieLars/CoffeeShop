@@ -98,22 +98,10 @@ class CommentDetailDto {
     }
 }
 
-// DTO para el impacto de eliminación por usuario
-class UserCommentsDeleteImpactDto {
-    constructor({
-        userId,
-        totalComments = 0
-    } = {}) {
-        this.userId = userId;
-        this.totalComments = totalComments;
-    }
-}
-
 module.exports = {
     CreateCommentDto,
     UpdateCommentDto,
     PatchCommentMessageDto,
     CommentListItemDto,
-    CommentDetailDto,
-    UserCommentsDeleteImpactDto
+    CommentDetailDto
 };

@@ -87,29 +87,6 @@ class CommentQueries extends ICommentQueries {
         }));
     }
 
-    // -----------------------------------------------------------------------------
-    // countCommentsByUserIdQueryAsync:
-    // Cuenta cuántos comentarios pertenecen a un usuario.
-    // -----------------------------------------------------------------------------
-    async countCommentsByUserIdQueryAsync(userId) {
-        if (!mongoose.isValidObjectId(userId)) return 0;
-
-        return await CommentModel.countDocuments({
-            userId: new mongoose.Types.ObjectId(userId)
-        });
-    }
-
-    // -----------------------------------------------------------------------------
-    // getUserCommentsDeleteImpactQueryAsync:
-    // Devuelve el impacto de comentarios antes de eliminar un usuario.
-    // -----------------------------------------------------------------------------
-    async getUserCommentsDeleteImpactQueryAsync(userId) {
-        const totalComments = await this.countCommentsByUserIdQueryAsync(userId);
-        return {
-            userId: userId?.toString(),
-            totalComments
-        };
-    }
 }
 
 module.exports = CommentQueries;

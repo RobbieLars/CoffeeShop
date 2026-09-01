@@ -5,8 +5,7 @@ const {
     CommentDetailDto,
     CreateCommentDto,
     UpdateCommentDto,
-    PatchCommentMessageDto,
-    UserCommentsDeleteImpactDto
+    PatchCommentMessageDto
 } = require('../DTOs/CommentDto');
 
 const Comment = require('../../Domain/Entities/Comment');
@@ -18,7 +17,6 @@ const {
 } = require('../Validators/Service/CommentDtoValidator');
 
 const ICommentQueries = require('../Interfaces/CQRS/Queries/ICommentQueries');
-const ICommentCommands = require('../Interfaces/CQRS/Commands/ICommentCommands');
 
 const validateRequiredObjectId = require('@coffeeshop/common/Helpers/validateRequiredObjectId');
 const {
@@ -33,7 +31,7 @@ const {
 } = require('@coffeeshop/common/Errors/ApplicationErrors');
 
 class CommentService {
-    constructor(commentRepository, commentQueries, commentCommands, paginationService) {
+    constructor(commentRepository, commentQueries, paginationService) {
         this._commentRepository = commentRepository;
         this._paginationService = paginationService;
 
@@ -41,12 +39,7 @@ class CommentService {
             throw new Error('commentQueries debe implementar ICommentQueries');
         }
 
-        if (!(commentCommands instanceof ICommentCommands)) {
-            throw new Error('commentCommands debe implementar ICommentCommands');
-        }
-
         this._commentQueries = commentQueries;
-        this._commentCommands = commentCommands;
 
         this._createCommentDtoValidator = new CreateCommentDtoValidator();
         this._updateCommentDtoValidator = new UpdateCommentDtoValidator();
@@ -99,15 +92,6 @@ class CommentService {
     async GetByUserIdAsync(userId) {
         const validUserId = validateRequiredObjectId(userId, 'userId');
         return await this._commentQueries.getCommentsByUserIdQueryAsync(validUserId);
-    }
-
-    // -----------------------------------------------------------------------------
-    // GetUserCommentsDeleteImpactAsync: Impacto antes de eliminar un usuario
-    // -----------------------------------------------------------------------------
-    async GetUserCommentsDeleteImpactAsync(userId) {
-        const validUserId = validateRequiredObjectId(userId, 'userId');
-        const impact = await this._commentQueries.getUserCommentsDeleteImpactQueryAsync(validUserId);
-        return new UserCommentsDeleteImpactDto(impact);
     }
 
     // -----------------------------------------------------------------------------

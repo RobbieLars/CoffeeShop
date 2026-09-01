@@ -7,6 +7,7 @@ const {
 
 const User = require('../../Domain/Entities/User');
 const IPasswordHasher = require('../Interfaces/Common/Security/IPasswordHasher');
+const ICommentCommands = require('../Interfaces/CQRS/Commands/ICommentCommands');
 
 const {
     CreateUserDtoValidator,
@@ -22,12 +23,17 @@ const {
 } = require('@coffeeshop/common/Errors/ApplicationErrors');
 
 class UserService {
-    constructor(userRepository, paginationService, passwordHasher) {
+    constructor(userRepository, paginationService, passwordHasher, commentCommands) {
         this._ensurePasswordHasher(passwordHasher);
+
+        if (!(commentCommands instanceof ICommentCommands)) {
+            throw new Error('commentCommands debe implementar ICommentCommands.');
+        }
 
         this._userRepository = userRepository;
         this._paginationService = paginationService;
         this._passwordHasher = passwordHasher;
+        this._commentCommands = commentCommands;
         this._createUserDtoValidator = new CreateUserDtoValidator();
         this._updateUserDtoValidator = new UpdateUserDtoValidator();
     }
@@ -159,6 +165,8 @@ class UserService {
         if (!deletedUserEntity) {
             throw new NotFoundError(`Usuario (${userId}) no encontrado.`);
         }
+
+        await this._commentCommands.deleteCommentsByUserIdCommandAsync(userId);
 
         return this._toUserDetailDto(deletedUserEntity);
     }

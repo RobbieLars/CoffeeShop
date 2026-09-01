@@ -40,7 +40,8 @@ function buildDependencyContainer() {
     const userService = new UserService(
         storeDbContext.users,
         paginationService,
-        passwordHasher
+        passwordHasher,
+        commentCommands
     );
     const petService = new PetService(
         storeDbContext.pets,
@@ -53,7 +54,6 @@ function buildDependencyContainer() {
     const commentService = new CommentService(
         storeDbContext.comments,
         commentQueries,
-        commentCommands,
         paginationService
     );
     const purchaseService = new PurchaseService(

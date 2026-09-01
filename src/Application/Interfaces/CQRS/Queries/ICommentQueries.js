@@ -12,15 +12,6 @@ class ICommentQueries {
         throw new Error('Method not implemented.');
     }
 
-    // Cuenta cuántos comentarios pertenecen a un usuario específico.
-    async countCommentsByUserIdQueryAsync(userId) {
-        throw new Error('Method not implemented.');
-    }
-
-    // Obtiene el impacto de eliminación de comentarios antes de borrar un usuario.
-    async getUserCommentsDeleteImpactQueryAsync(userId) {
-        throw new Error('Method not implemented.');
-    }
 }
 
 module.exports = ICommentQueries;
