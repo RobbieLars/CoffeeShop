@@ -12,9 +12,6 @@ module.exports = (commentController) => {
     // GetPagedAsync: GET /api/comment o con paginación GET /api/comment?page=1&pageSize=5
     router.get('/', asyncHandler(commentController.GetPagedAsync));
 
-    // GetByUserIdAsync: GET /api/comment/user/:userId
-    router.get('/user/:userId', asyncHandler(commentController.GetByUserIdAsync));
-
     // GetByIdAsync: GET /api/comment/:id
     router.get('/:id', asyncHandler(commentController.GetByIdAsync));
 
@@ -26,9 +23,6 @@ module.exports = (commentController) => {
 
     // PatchMessageAsync: PATCH /api/comment/:id/message
     router.patch('/:id/message', asyncHandler(commentController.PatchMessageAsync));
-
-    // SoftDeleteAsync: DELETE /api/comment/:id
-    router.delete('/:id', asyncHandler(commentController.SoftDeleteAsync));
 
     // HardDeleteAsync: DELETE /api/comment/hard/:id
     router.delete('/hard/:id', asyncHandler(commentController.HardDeleteAsync));

@@ -4,15 +4,20 @@ const {
     PetListItemDto,
     PetDetailDto,
     CreatePetDto,
-    UpdatePetDto
+    UpdatePetDto,
+    PatchPetOwnerDto
 } = require('../DTOs/PetDto');
 
 const Pet = require('../../Domain/Entities/Pet');
+const PetType = require('../../Domain/Constants/PetType');
 
 const {
     CreatePetDtoValidator,
-    UpdatePetDtoValidator
+    UpdatePetDtoValidator,
+    PatchPetOwnerDtoValidator
 } = require('../Validators/Service/PetDtoValidator');
+
+const IPetQueries = require('../Interfaces/CQRS/Queries/IPetQueries');
 
 const validateRequiredObjectId = require('@coffeeshop/common/Helpers/validateRequiredObjectId');
 const {
@@ -22,17 +27,23 @@ const {
 
 const {
     ValidationError,
-    NotFoundError,
-    ConflictError
+    NotFoundError
 } = require('@coffeeshop/common/Errors/ApplicationErrors');
 
 class PetService {
-    constructor(petRepository, paginationService) {
+    constructor(petRepository, petQueries, paginationService) {
         this._petRepository = petRepository;
         this._paginationService = paginationService;
 
+        if (!(petQueries instanceof IPetQueries)) {
+            throw new Error('petQueries debe implementar IPetQueries');
+        }
+
+        this._petQueries = petQueries;
+
         this._createPetDtoValidator = new CreatePetDtoValidator();
         this._updatePetDtoValidator = new UpdatePetDtoValidator();
+        this._patchPetOwnerDtoValidator = new PatchPetOwnerDtoValidator();
     }
 
     async GetPagedAsync(paginationData) {
@@ -41,8 +52,9 @@ class PetService {
         return await this._paginationService.paginate(
             this._petRepository,
             paginationData,
-            petEntity => this._toPetListItemDto(petEntity),
-            searchCriteria
+            petEntity => petEntity,
+            searchCriteria,
+            petEntities => this._toPetListItemDtosAsync(petEntities)
         );
     }
 
@@ -56,7 +68,7 @@ class PetService {
             throw new NotFoundError(`Mascota (${petId}) no encontrada.`);
         }
 
-        return this._toPetDetailDto(
+        return await this._toPetDetailDtoAsync(
             petEntity.entity,
             petEntity.audit
         );
@@ -73,20 +85,22 @@ class PetService {
             throw new ValidationError('Error de validación.', validationErrors);
         }
 
+        const owner = await this._getRequiredOwnerAsync(dto.ownerId);
+
         const petEntity = new Pet({
+            ownerId: dto.ownerId,
             photoPublicId: dto.photoPublicId ?? null,
             name: normalizeText(dto.name),
             type: Number(dto.type),
-            breed: Number(dto.breed),
             birthDate: dto.birthDate ? new Date(dto.birthDate) : null,
             gender: Number(dto.gender),
             weight: dto.weight !== undefined && dto.weight !== null ? Number(dto.weight) : null,
             favoriteFood: dto.favoriteFood ? normalizeText(dto.favoriteFood) : null,
-            enabled: true
+            privacy: true
         });
 
         const createdPetEntity = await this._petRepository.createAsync(petEntity);
-        return this._toPetDetailDto(createdPetEntity);
+        return await this._toPetDetailDtoAsync(createdPetEntity, null, owner);
     }
 
     async UpdateAsync(id, updatePetDto) {
@@ -108,8 +122,16 @@ class PetService {
             throw new NotFoundError(`Mascota (${petId}) no encontrada.`);
         }
 
+        const owner = dto.ownerId === undefined
+            ? undefined
+            : await this._getRequiredOwnerAsync(dto.ownerId);
+
         const petEntity = new Pet({
             id: petId,
+            ownerId: resolveUpdateValue(
+                dto.ownerId,
+                existingPetEntity.ownerId
+            ),
             photoPublicId: dto.photoPublicId === undefined
                 ? existingPetEntity.photoPublicId
                 : dto.photoPublicId,
@@ -121,11 +143,6 @@ class PetService {
             type: resolveUpdateValue(
                 dto.type,
                 existingPetEntity.type,
-                Number
-            ),
-            breed: resolveUpdateValue(
-                dto.breed,
-                existingPetEntity.breed,
                 Number
             ),
             birthDate: dto.birthDate === undefined
@@ -142,9 +159,9 @@ class PetService {
             favoriteFood: dto.favoriteFood === undefined
                 ? existingPetEntity.favoriteFood
                 : (dto.favoriteFood ? normalizeText(dto.favoriteFood) : null),
-            enabled: resolveUpdateValue(
-                dto.enabled,
-                existingPetEntity.enabled
+            privacy: resolveUpdateValue(
+                dto.privacy,
+                existingPetEntity.privacy
             )
         });
 
@@ -154,11 +171,21 @@ class PetService {
             throw new NotFoundError(`Mascota (${petId}) no encontrada.`);
         }
 
-        return this._toPetDetailDto(updatedPetEntity);
+        return await this._toPetDetailDtoAsync(updatedPetEntity, null, owner);
     }
 
-    async SoftDeleteAsync(id) {
+    async PatchOwnerAsync(id, patchPetOwnerDto) {
         const petId = validateRequiredObjectId(id, 'id');
+
+        const dto = patchPetOwnerDto instanceof PatchPetOwnerDto
+            ? patchPetOwnerDto
+            : new PatchPetOwnerDto(patchPetOwnerDto);
+
+        const validationErrors = this._patchPetOwnerDtoValidator.validate(dto);
+
+        if (validationErrors.length > 0) {
+            throw new ValidationError('Error de validación.', validationErrors);
+        }
 
         const existingPetEntity = await this._petRepository.getByIdAsync(petId);
 
@@ -166,17 +193,18 @@ class PetService {
             throw new NotFoundError(`Mascota (${petId}) no encontrada.`);
         }
 
-        if (existingPetEntity.enabled === false) {
-            throw new ConflictError('La Mascota ya está inhabilitada.');
-        }
+        const owner = await this._getRequiredOwnerAsync(dto.ownerId);
 
-        const updatedPetEntity = await this._petRepository.patchByIdAsync(petId, { enabled: false });
+        const updatedPetEntity = await this._petRepository.patchByIdAsync(
+            petId,
+            { ownerId: dto.ownerId }
+        );
 
         if (!updatedPetEntity) {
             throw new NotFoundError(`Mascota (${petId}) no encontrada.`);
         }
 
-        return this._toPetDetailDto(updatedPetEntity);
+        return await this._toPetDetailDtoAsync(updatedPetEntity, null, owner);
     }
 
     async HardDeleteAsync(id) {
@@ -188,34 +216,72 @@ class PetService {
             throw new NotFoundError(`Mascota (${petId}) no encontrada.`);
         }
 
-        return this._toPetDetailDto(deletedPetEntity);
+        return await this._toPetDetailDtoAsync(deletedPetEntity);
     }
 
-    _toPetDetailDto(petEntity, audit = null) {
+    async _getRequiredOwnerAsync(ownerId) {
+        const validOwnerId = validateRequiredObjectId(ownerId, 'ownerId');
+        const owners = await this._petQueries
+            .getOwnersByIdsQueryAsync([validOwnerId]);
+        const owner = owners[0] ?? null;
+
+        if (!owner) {
+            throw new NotFoundError(
+                `Propietario (${validOwnerId}) no encontrado.`
+            );
+        }
+
+        return owner;
+    }
+
+    async _toPetDetailDtoAsync(petEntity, audit = null, owner = undefined) {
+        const relatedOwner = owner === undefined
+            ? (await this._petQueries.getOwnersByIdsQueryAsync([petEntity.ownerId]))[0] ?? null
+            : owner;
+
         return new PetDetailDto({
             id: petEntity.id,
+            ownerId: petEntity.ownerId,
+            ownerName: relatedOwner?.ownerName ?? null,
             photoPublicId: petEntity.photoPublicId,
             name: petEntity.name,
             type: petEntity.type,
-            breed: petEntity.breed,
+            typeName: this._getPetTypeName(petEntity.type),
             birthDate: petEntity.birthDate,
             gender: petEntity.gender,
             weight: petEntity.weight,
             favoriteFood: petEntity.favoriteFood,
-            enabled: petEntity.enabled,
+            privacy: petEntity.privacy,
             audit
         });
     }
 
-    _toPetListItemDto(petEntity) {
-        return new PetListItemDto({
-            id: petEntity.id ?? petEntity._id,
-            photoPublicId: petEntity.photoPublicId,
-            name: petEntity.name,
-            type: petEntity.type,
-            breed: petEntity.breed,
-            enabled: petEntity.enabled
+    async _toPetListItemDtosAsync(petEntities) {
+        const ownerIds = petEntities.map(petEntity => petEntity.ownerId);
+        const owners = await this._petQueries.getOwnersByIdsQueryAsync(ownerIds);
+        const ownerById = new Map(
+            owners.map(owner => [owner.ownerId, owner])
+        );
+
+        return petEntities.map(petEntity => {
+            const owner = ownerById.get(petEntity.ownerId) ?? null;
+
+            return new PetListItemDto({
+                id: petEntity.id ?? petEntity._id,
+                ownerId: petEntity.ownerId,
+                ownerName: owner?.ownerName ?? null,
+                photoPublicId: petEntity.photoPublicId,
+                name: petEntity.name,
+                type: petEntity.type,
+                typeName: this._getPetTypeName(petEntity.type),
+                privacy: petEntity.privacy
+            });
         });
+    }
+
+    _getPetTypeName(type) {
+        return Object.entries(PetType)
+            .find(([, value]) => value === Number(type))?.[0] ?? null;
     }
 }
 

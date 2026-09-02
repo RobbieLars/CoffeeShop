@@ -6,8 +6,7 @@ class Purchase {
         userId,
         petId,
         day,
-        photoPublicId = null,
-        enabled = true
+        photoPublicId = null
     } = {}) {
         this.id = id;
         this.productId = productId;
@@ -15,7 +14,6 @@ class Purchase {
         this.petId = petId;
         this.day = day;
         this.photoPublicId = photoPublicId;
-        this.enabled = enabled;
     }
 }
 

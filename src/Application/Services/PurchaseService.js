@@ -21,14 +21,21 @@ const {
 
 const {
     ValidationError,
-    NotFoundError,
-    ConflictError
+    NotFoundError
 } = require('@coffeeshop/common/Errors/ApplicationErrors');
 
+const IPurchaseQueries = require('../Interfaces/CQRS/Queries/IPurchaseQueries');
+
 class PurchaseService {
-    constructor(purchaseRepository, paginationService) {
+    constructor(purchaseRepository, purchaseQueries, paginationService) {
         this._purchaseRepository = purchaseRepository;
         this._paginationService = paginationService;
+
+        if (!(purchaseQueries instanceof IPurchaseQueries)) {
+            throw new Error('purchaseQueries debe implementar IPurchaseQueries');
+        }
+
+        this._purchaseQueries = purchaseQueries;
 
         this._createPurchaseDtoValidator = new CreatePurchaseDtoValidator();
         this._updatePurchaseDtoValidator = new UpdatePurchaseDtoValidator();
@@ -40,8 +47,9 @@ class PurchaseService {
         return await this._paginationService.paginate(
             this._purchaseRepository,
             paginationData,
-            purchaseEntity => this._toPurchaseListItemDto(purchaseEntity),
-            searchCriteria
+            purchaseEntity => purchaseEntity,
+            searchCriteria,
+            purchaseEntities => this._toPurchaseListItemDtosAsync(purchaseEntities)
         );
     }
 
@@ -57,7 +65,7 @@ class PurchaseService {
             );
         }
 
-        return this._toPurchaseDetailDto(
+        return await this._toPurchaseDetailDtoAsync(
             purchaseEntity.entity,
             purchaseEntity.audit
         );
@@ -83,14 +91,13 @@ class PurchaseService {
             userId: dto.userId,
             petId: dto.petId,
             day: new Date(),
-            photoPublicId: null,
-            enabled: true
+            photoPublicId: null
         });
 
         const createdPurchaseEntity =
             await this._purchaseRepository.createAsync(purchaseEntity);
 
-        return this._toPurchaseDetailDto(createdPurchaseEntity);
+        return await this._toPurchaseDetailDtoAsync(createdPurchaseEntity);
     }
 
     async UpdateAsync(id, updatePurchaseDto) {
@@ -144,12 +151,7 @@ class PurchaseService {
 
             photoPublicId: dto.photoPublicId === undefined
                 ? existingPurchaseEntity.photoPublicId
-                : dto.photoPublicId,
-
-            enabled: resolveUpdateValue(
-                dto.enabled,
-                existingPurchaseEntity.enabled
-            )
+                : dto.photoPublicId
         });
 
         const updatedPurchaseEntity =
@@ -164,37 +166,7 @@ class PurchaseService {
             );
         }
 
-        return this._toPurchaseDetailDto(updatedPurchaseEntity);
-    }
-
-    async SoftDeleteAsync(id) {
-        const purchaseId = validateRequiredObjectId(id, 'id');
-        const existingPurchaseEntity =
-            await this._purchaseRepository.getByIdAsync(purchaseId);
-
-        if (!existingPurchaseEntity) {
-            throw new NotFoundError(
-                `Compra (${purchaseId}) no encontrada.`
-            );
-        }
-
-        if (existingPurchaseEntity.enabled === false) {
-            throw new ConflictError('La Compra ya está inhabilitada.');
-        }
-
-        const disabledPurchaseEntity =
-            await this._purchaseRepository.patchByIdAsync(
-                purchaseId,
-                { enabled: false }
-            );
-
-        if (!disabledPurchaseEntity) {
-            throw new NotFoundError(
-                `Compra (${purchaseId}) no encontrada.`
-            );
-        }
-
-        return this._toPurchaseDetailDto(disabledPurchaseEntity);
+        return await this._toPurchaseDetailDtoAsync(updatedPurchaseEntity);
     }
 
     async HardDeleteAsync(id) {
@@ -209,31 +181,57 @@ class PurchaseService {
             );
         }
 
-        return this._toPurchaseDetailDto(deletedPurchaseEntity);
+        return await this._toPurchaseDetailDtoAsync(deletedPurchaseEntity);
     }
 
-    _toPurchaseDetailDto(purchaseEntity, audit = null) {
+    async _toPurchaseDetailDtoAsync(purchaseEntity, audit = null) {
+        const references = await this._getReferenceMapsAsync([purchaseEntity]);
+
         return new PurchaseDetailDto({
             id: purchaseEntity.id,
             productId: purchaseEntity.productId,
+            productName: references.productNames.get(purchaseEntity.productId) ?? null,
             userId: purchaseEntity.userId,
+            userName: references.userNames.get(purchaseEntity.userId) ?? null,
             petId: purchaseEntity.petId,
+            petName: references.petNames.get(purchaseEntity.petId) ?? null,
             day: purchaseEntity.day,
             photoPublicId: purchaseEntity.photoPublicId,
-            enabled: purchaseEntity.enabled,
             audit
         });
     }
 
-    _toPurchaseListItemDto(purchaseEntity) {
-        return new PurchaseListItemDto({
-            id: purchaseEntity.id ?? purchaseEntity._id,
-            productId: purchaseEntity.productId,
-            userId: purchaseEntity.userId,
-            petId: purchaseEntity.petId,
-            day: purchaseEntity.day,
-            enabled: purchaseEntity.enabled
-        });
+    async _toPurchaseListItemDtosAsync(purchaseEntities) {
+        const references = await this._getReferenceMapsAsync(purchaseEntities);
+
+        return purchaseEntities.map(purchaseEntity => new PurchaseListItemDto({
+            id: purchaseEntity.id ?? purchaseEntity._id?.toString?.(),
+            productName: references.productNames.get(purchaseEntity.productId) ?? null,
+            userName: references.userNames.get(purchaseEntity.userId) ?? null,
+            petName: references.petNames.get(purchaseEntity.petId) ?? null,
+            day: purchaseEntity.day
+        }));
+    }
+
+    async _getReferenceMapsAsync(purchaseEntities) {
+        const result = await this._purchaseQueries
+            .getPurchaseReferencesByIdsQueryAsync({
+                productIds: purchaseEntities.map(purchase => purchase.productId),
+                userIds: purchaseEntities.map(purchase => purchase.userId),
+                petIds: purchaseEntities.map(purchase => purchase.petId)
+            });
+
+        return {
+            productNames: new Map(
+                result.products.map(product => [product.productId, product.productName])
+            ),
+            userNames: new Map(
+                result.users.map(user => [user.userId, user.userName])
+            ),
+            petNames: new Map(
+                result.pets.map(pet => [pet.petId, pet.petName])
+            )
+        };
     }
 }
 

@@ -44,7 +44,6 @@ class CommentQueries extends ICommentQueries {
                     message: 1,
                     photoPublicId: 1,
                     edited: 1,
-                    enabled: 1,
                     createdAt: 1,
                     userUsername: '$author.username',
                     userPhotoProfilePublicId: '$author.photoProfilePublicId'
@@ -60,29 +59,6 @@ class CommentQueries extends ICommentQueries {
             message: doc.message,
             photoPublicId: doc.photoPublicId,
             edited: doc.edited ?? false,
-            enabled: doc.enabled ?? true,
-            createdAt: doc.createdAt
-        }));
-    }
-
-    // -----------------------------------------------------------------------------
-    // getCommentsByUserIdQueryAsync:
-    // Obtiene todos los comentarios de un usuario.
-    // -----------------------------------------------------------------------------
-    async getCommentsByUserIdQueryAsync(userId) {
-        if (!mongoose.isValidObjectId(userId)) return [];
-
-        const comments = await CommentModel.find({
-            userId: new mongoose.Types.ObjectId(userId)
-        }).sort({ createdAt: -1 }).lean();
-
-        return comments.map(doc => ({
-            id: doc._id.toString(),
-            userId: doc.userId.toString(),
-            message: doc.message,
-            photoPublicId: doc.photoPublicId,
-            edited: doc.edited ?? false,
-            enabled: doc.enabled ?? true,
             createdAt: doc.createdAt
         }));
     }

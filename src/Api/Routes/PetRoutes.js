@@ -21,8 +21,8 @@ module.exports = (petController) => {
     // UpdateAsync: PUT /api/pet/:id
     router.put('/:id', asyncHandler(petController.UpdateAsync));
 
-    // SoftDeleteAsync: DELETE /api/pet/:id
-    router.delete('/:id', asyncHandler(petController.SoftDeleteAsync));
+    // PatchOwnerAsync: PATCH /api/pet/:id/owner
+    router.patch('/:id/owner', asyncHandler(petController.PatchOwnerAsync));
 
     // HardDeleteAsync: DELETE /api/pet/hard/:id
     router.delete('/hard/:id', asyncHandler(petController.HardDeleteAsync));

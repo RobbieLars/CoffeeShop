@@ -34,15 +34,15 @@ class UpdatePurchaseDto {
 class PurchaseListItemDto {
     constructor({
         id,
-        productId,
-        userId,
-        petId,
+        productName,
+        userName,
+        petName,
         day
     } = {}) {
         this.id = id;
-        this.productId = productId;
-        this.userId = userId;
-        this.petId = petId;
+        this.productName = productName;
+        this.userName = userName;
+        this.petName = petName;
         this.day = day;
     }
 }
@@ -52,20 +52,24 @@ class PurchaseDetailDto {
     constructor({
         id,
         productId,
+        productName,
         userId,
+        userName,
         petId,
+        petName,
         day,
         photoPublicId,
-        enabled,
         audit = null
     } = {}) {
         this.id = id;
         this.productId = productId;
+        this.productName = productName;
         this.userId = userId;
+        this.userName = userName;
         this.petId = petId;
+        this.petName = petName;
         this.day = day;
         this.photoPublicId = photoPublicId;
-        this.enabled = enabled;
 
         if (audit) {
             this.audit = audit instanceof AuditMetadataDto

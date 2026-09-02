@@ -15,9 +15,6 @@ const COMMENT_FIELDS = Object.freeze({
     },
     edited: {
         type: 'boolean'
-    },
-    enabled: {
-        type: 'boolean'
     }
 });
 
@@ -35,8 +32,7 @@ class CreateCommentDtoValidator extends CommonCommentDtoValidator {
                 'message'
             ],
             forbiddenFields: [
-                'edited',
-                'enabled'
+                'edited'
             ]
         });
     }
@@ -60,8 +56,7 @@ class PatchCommentMessageDtoValidator extends CommonCommentDtoValidator {
             forbiddenFields: [
                 'userId',
                 'photoPublicId',
-                'edited',
-                'enabled'
+                'edited'
             ]
         });
     }

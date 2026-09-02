@@ -5,6 +5,7 @@ const {
     CreateProductDto,
     UpdateProductDto
 } = require('../../Application/DTOs/ProductDto');
+const CommonEnabledDto = require('@coffeeshop/common/DTOs/CommonEnabledDto');
 
 // Controller para manejo de Productos.
 class ProductController {
@@ -16,6 +17,7 @@ class ProductController {
         this.GetByIdAsync = this.GetByIdAsync.bind(this);
         this.CreateAsync = this.CreateAsync.bind(this);
         this.UpdateAsync = this.UpdateAsync.bind(this);
+        this.PatchEnabledAsync = this.PatchEnabledAsync.bind(this);
         this.SoftDeleteAsync = this.SoftDeleteAsync.bind(this);
         this.HardDeleteAsync = this.HardDeleteAsync.bind(this);
     }
@@ -62,6 +64,19 @@ class ProductController {
     async UpdateAsync(req, res) {
         const dto = new UpdateProductDto(req.body);
         const result = await this._productService.UpdateAsync(req.params.id, dto);
+
+        return res.status(200).json(result);
+    }
+
+    // -----------------------------------------------------------------------------
+    // PatchEnabledAsync: Actualiza únicamente el estado de un producto.
+    // -----------------------------------------------------------------------------
+    async PatchEnabledAsync(req, res) {
+        const dto = new CommonEnabledDto(req.body);
+        const result = await this._productService.PatchEnabledAsync(
+            req.params.id,
+            dto
+        );
 
         return res.status(200).json(result);
     }

@@ -2,6 +2,7 @@
 
 const { Schema, model } = require('mongoose');
 const { buildExistsValidator } = require('../Common/MongooseValidation');
+const PetType = require('../../../Domain/Constants/PetType');
 
 // -----------------------------------------------------------------------------
 // Role Schema
@@ -68,10 +69,10 @@ const personSchema = new Schema({
         trim: true,
         lowercase: true
     },
-    enabled: {
-        type: Boolean,
-        required: true,
-        default: true
+    googleFolderPersonUrl: {
+        type: String,
+        default: null,
+        trim: true
     }
 }, {
     timestamps: true
@@ -135,6 +136,15 @@ const UserModel = model('User', userSchema, 'User');
 // Pet Schema
 // -----------------------------------------------------------------------------
 const petSchema = new Schema({
+    ownerId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        validate: buildExistsValidator(
+            UserModel,
+            'El owner no existe en la colección User.'
+        )
+    },
     photoPublicId: {
         type: String,
         default: null,
@@ -147,11 +157,8 @@ const petSchema = new Schema({
     },
     type: {
         type: Number,
-        required: true
-    },
-    breed: {
-        type: Number,
-        required: true
+        required: true,
+        enum: Object.values(PetType)
     },
     birthDate: {
         type: Date,
@@ -170,7 +177,7 @@ const petSchema = new Schema({
         default: null,
         trim: true
     },
-    enabled: {
+    privacy: {
         type: Boolean,
         required: true,
         default: true
@@ -248,11 +255,6 @@ const commentSchema = new Schema({
         type: Boolean,
         required: true,
         default: false
-    },
-    enabled: {
-        type: Boolean,
-        required: true,
-        default: true
     }
 }, {
     timestamps: true
@@ -300,17 +302,69 @@ const purchaseSchema = new Schema({
         type: String,
         default: null,
         trim: true
-    },
-    enabled: {
-        type: Boolean,
-        required: true,
-        default: true
     }
 }, {
     timestamps: true
 });
 
 const PurchaseModel = model('Purchase', purchaseSchema, 'Purchase');
+
+// -----------------------------------------------------------------------------
+// Gift Schema
+// -----------------------------------------------------------------------------
+const giftSchema = new Schema({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        validate: buildExistsValidator(
+            UserModel,
+            'El userId no existe en la colección User.'
+        )
+    },
+    productId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
+        validate: buildExistsValidator(
+            ProductModel,
+            'El productId no existe en la colección Product.'
+        )
+    },
+    petId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Pet',
+        required: true,
+        validate: buildExistsValidator(
+            PetModel,
+            'El petId no existe en la colección Pet.'
+        )
+    },
+    date: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
+    giftReceived: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    googlePhotoPetUrl: {
+        type: String,
+        default: null,
+        trim: true
+    },
+    googleFolderPetUrl: {
+        type: String,
+        default: null,
+        trim: true
+    }
+}, {
+    timestamps: true
+});
+
+const GiftModel = model('Gift', giftSchema, 'Gift');
 
 module.exports = {
     RoleModel,
@@ -319,5 +373,6 @@ module.exports = {
     PetModel,
     ProductModel,
     CommentModel,
-    PurchaseModel
+    PurchaseModel,
+    GiftModel
 };

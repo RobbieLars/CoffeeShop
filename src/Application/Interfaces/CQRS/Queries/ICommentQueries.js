@@ -7,11 +7,6 @@ class ICommentQueries {
         throw new Error('Method not implemented.');
     }
 
-    // Obtiene todos los comentarios realizados por un usuario.
-    async getCommentsByUserIdQueryAsync(userId) {
-        throw new Error('Method not implemented.');
-    }
-
 }
 
 module.exports = ICommentQueries;

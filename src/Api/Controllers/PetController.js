@@ -3,7 +3,8 @@
 // DTOs
 const {
     CreatePetDto,
-    UpdatePetDto
+    UpdatePetDto,
+    PatchPetOwnerDto
 } = require('../../Application/DTOs/PetDto');
 
 // Controller para manejo de Mascotas.
@@ -15,7 +16,7 @@ class PetController {
         this.GetByIdAsync = this.GetByIdAsync.bind(this);
         this.CreateAsync = this.CreateAsync.bind(this);
         this.UpdateAsync = this.UpdateAsync.bind(this);
-        this.SoftDeleteAsync = this.SoftDeleteAsync.bind(this);
+        this.PatchOwnerAsync = this.PatchOwnerAsync.bind(this);
         this.HardDeleteAsync = this.HardDeleteAsync.bind(this);
     }
 
@@ -66,11 +67,13 @@ class PetController {
     }
 
     // -----------------------------------------------------------------------------
-    // SoftDeleteAsync: Inhabilita lógicamente una mascota.
+    // PatchOwnerAsync: Cambia únicamente el propietario de una mascota.
     // -----------------------------------------------------------------------------
-    async SoftDeleteAsync(req, res) {
-        await this._petService.SoftDeleteAsync(req.params.id);
-        return res.status(204).send();
+    async PatchOwnerAsync(req, res) {
+        const dto = new PatchPetOwnerDto(req.body);
+        const result = await this._petService.PatchOwnerAsync(req.params.id, dto);
+
+        return res.status(200).json(result);
     }
 
     // -----------------------------------------------------------------------------

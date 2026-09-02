@@ -31,11 +31,19 @@ const {
     NotFoundError
 } = require('@coffeeshop/common/Errors/ApplicationErrors');
 
+const IPersonQueries = require('../Interfaces/CQRS/Queries/IPersonQueries');
+
 class PersonService {
 
-    constructor(personRepository, paginationService) {
+    constructor(personRepository, personQueries, paginationService) {
         this._personRepository = personRepository;
         this._paginationService = paginationService;
+
+        if (!(personQueries instanceof IPersonQueries)) {
+            throw new Error('personQueries debe implementar IPersonQueries');
+        }
+
+        this._personQueries = personQueries;
 
         this._createPersonDtoValidator = new CreatePersonDtoValidator();
         this._updatePersonDtoValidator = new UpdatePersonDtoValidator();
@@ -47,8 +55,9 @@ class PersonService {
         return await this._paginationService.paginate(
             this._personRepository,
             paginationData,
-            personEntity => this._toPersonListItemDto(personEntity),
-            searchCriteria
+            personEntity => personEntity,
+            searchCriteria,
+            personEntities => this._toPersonListItemDtosAsync(personEntities)
         );
     }
 
@@ -63,7 +72,7 @@ class PersonService {
             );
         }
 
-        return this._toPersonDetailDto(
+        return await this._toPersonDetailDtoAsync(
             personEntity.entity,
             personEntity.audit
         );
@@ -95,14 +104,15 @@ class PersonService {
                 : normalizeText(dto.gender),
             email: dto.email == null
                 ? null
-                : normalizeText(dto.email).toLowerCase()
+                : normalizeText(dto.email).toLowerCase(),
+            googleFolderPersonUrl: null
         });
 
         try {
             const createdPersonEntity =
                 await this._personRepository.createAsync(personEntity);
 
-            return this._toPersonDetailDto(createdPersonEntity);
+            return await this._toPersonDetailDtoAsync(createdPersonEntity);
 
         } catch (error) {
             handleDuplicateKeyError(
@@ -179,7 +189,13 @@ class PersonService {
                 ? existingPersonEntity.email
                 : dto.email === null
                     ? null
-                    : normalizeText(dto.email).toLowerCase()
+                    : normalizeText(dto.email).toLowerCase(),
+
+            googleFolderPersonUrl: dto.googleFolderPersonUrl === undefined
+                ? existingPersonEntity.googleFolderPersonUrl
+                : dto.googleFolderPersonUrl === null
+                    ? null
+                    : normalizeText(dto.googleFolderPersonUrl)
         });
 
         try {
@@ -195,7 +211,7 @@ class PersonService {
                 );
             }
 
-            return this._toPersonDetailDto(updatedPersonEntity);
+            return await this._toPersonDetailDtoAsync(updatedPersonEntity);
 
         } catch (error) {
             handleDuplicateKeyError(
@@ -217,10 +233,14 @@ class PersonService {
             );
         }
 
-        return this._toPersonDetailDto(deletedPersonEntity);
+        return await this._toPersonDetailDtoAsync(deletedPersonEntity);
     }
 
-    _toPersonDetailDto(personEntity, audit = null) {
+    async _toPersonDetailDtoAsync(personEntity, audit = null) {
+        const users = await this._personQueries
+            .getUsersByPersonIdsQueryAsync([personEntity.id]);
+        const relatedUser = users[0] ?? null;
+
         return new PersonDetailDto({
             id: personEntity.id,
             name: personEntity.name,
@@ -229,17 +249,39 @@ class PersonService {
             secondLastName: personEntity.secondLastName,
             birthDate: personEntity.birthDate,
             gender: personEntity.gender,
+            userId: relatedUser?.userId ?? null,
+            userName: relatedUser?.userName ?? null,
             email: personEntity.email,
+            googleFolderPersonUrl: personEntity.googleFolderPersonUrl,
             audit
         });
     }
 
-    _toPersonListItemDto(personEntity) {
-        return new PersonListItemDto({
-            id: personEntity.id ?? personEntity._id,
-            name: personEntity.name,
-            lastName: personEntity.lastName,
-            email: personEntity.email
+    async _toPersonListItemDtosAsync(personEntities) {
+        const personIds = personEntities.map(
+            personEntity => personEntity.id ?? personEntity._id?.toString?.()
+        );
+        const users = await this._personQueries
+            .getUsersByPersonIdsQueryAsync(personIds);
+        const userByPersonId = new Map();
+
+        for (const user of users) {
+            if (!userByPersonId.has(user.personId)) {
+                userByPersonId.set(user.personId, user);
+            }
+        }
+
+        return personEntities.map(personEntity => {
+            const id = personEntity.id ?? personEntity._id?.toString?.();
+            const relatedUser = userByPersonId.get(id) ?? null;
+
+            return new PersonListItemDto({
+                id,
+                name: personEntity.name,
+                lastName: personEntity.lastName,
+                userName: relatedUser?.userName ?? null,
+                email: personEntity.email
+            });
         });
     }
 }

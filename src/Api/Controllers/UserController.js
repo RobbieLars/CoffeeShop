@@ -5,6 +5,7 @@ const {
     CreateUserDto,
     UpdateUserDto
 } = require('../../Application/DTOs/UserDto');
+const CommonEnabledDto = require('@coffeeshop/common/DTOs/CommonEnabledDto');
 
 // Controller para manejo de Usuarios.
 class UserController {
@@ -16,6 +17,7 @@ class UserController {
         this.GetByIdAsync = this.GetByIdAsync.bind(this);
         this.CreateAsync = this.CreateAsync.bind(this);
         this.UpdateAsync = this.UpdateAsync.bind(this);
+        this.PatchEnabledAsync = this.PatchEnabledAsync.bind(this);
         this.SoftDeleteAsync = this.SoftDeleteAsync.bind(this);
         this.HardDeleteAsync = this.HardDeleteAsync.bind(this);
     }
@@ -62,6 +64,16 @@ class UserController {
     async UpdateAsync(req, res) {
         const dto = new UpdateUserDto(req.body);
         const result = await this._userService.UpdateAsync(req.params.id, dto);
+
+        return res.status(200).json(result);
+    }
+
+    async PatchEnabledAsync(req, res) {
+        const dto = new CommonEnabledDto(req.body);
+        const result = await this._userService.PatchEnabledAsync(
+            req.params.id,
+            dto
+        );
 
         return res.status(200).json(result);
     }

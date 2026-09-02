@@ -5,6 +5,7 @@ const {
     CreateRoleDto,
     UpdateRoleDto
 } = require('../../Application/DTOs/RoleDto');
+const CommonEnabledDto = require('@coffeeshop/common/DTOs/CommonEnabledDto');
 
 // Controller para manejo de Roles.
 class RoleController {
@@ -16,6 +17,7 @@ class RoleController {
         this.GetByIdAsync = this.GetByIdAsync.bind(this);
         this.CreateAsync = this.CreateAsync.bind(this);
         this.UpdateAsync = this.UpdateAsync.bind(this);
+        this.PatchEnabledAsync = this.PatchEnabledAsync.bind(this);
         this.SoftDeleteAsync = this.SoftDeleteAsync.bind(this);
         this.HardDeleteAsync = this.HardDeleteAsync.bind(this);
     }
@@ -62,6 +64,16 @@ class RoleController {
     async UpdateAsync(req, res) {
         const dto = new UpdateRoleDto(req.body);
         const result = await this._roleService.UpdateAsync(req.params.id, dto);
+
+        return res.status(200).json(result);
+    }
+
+    async PatchEnabledAsync(req, res) {
+        const dto = new CommonEnabledDto(req.body);
+        const result = await this._roleService.PatchEnabledAsync(
+            req.params.id,
+            dto
+        );
 
         return res.status(200).json(result);
     }

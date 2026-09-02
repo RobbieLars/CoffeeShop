@@ -21,6 +21,9 @@ module.exports = (userController) => {
     // UpdateAsync: PUT /api/user/:id
     router.put('/:id', asyncHandler(userController.UpdateAsync));
 
+    // PatchEnabledAsync: PATCH /api/user/:id/enabled
+    router.patch('/:id/enabled', asyncHandler(userController.PatchEnabledAsync));
+
     // SoftDeleteAsync: DELETE /api/user/:id
     router.delete('/:id', asyncHandler(userController.SoftDeleteAsync));
 

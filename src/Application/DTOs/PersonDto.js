@@ -30,7 +30,8 @@ class UpdatePersonDto {
         secondLastName,
         birthDate,
         gender,
-        email
+        email,
+        googleFolderPersonUrl
     } = {}) {
         this.name = name;
         this.secondName = secondName;
@@ -39,6 +40,7 @@ class UpdatePersonDto {
         this.birthDate = birthDate;
         this.gender = gender;
         this.email = email;
+        this.googleFolderPersonUrl = googleFolderPersonUrl;
     }
 }
 
@@ -48,11 +50,13 @@ class PersonListItemDto {
         id,
         name,
         lastName,
+        userName = null,
         email
     } = {}) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
+        this.userName = userName;
         this.email = email;
     }
 }
@@ -67,7 +71,10 @@ class PersonDetailDto {
         secondLastName,
         birthDate,
         gender,
+        userId = null,
+        userName = null,
         email,
+        googleFolderPersonUrl = null,
         audit = null
     } = {}) {
         this.id = id;
@@ -77,7 +84,10 @@ class PersonDetailDto {
         this.secondLastName = secondLastName;
         this.birthDate = birthDate;
         this.gender = gender;
+        this.userId = userId;
+        this.userName = userName;
         this.email = email;
+        this.googleFolderPersonUrl = googleFolderPersonUrl;
 
         if (audit) {
             this.audit = audit instanceof AuditMetadataDto

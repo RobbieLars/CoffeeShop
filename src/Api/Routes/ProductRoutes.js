@@ -21,6 +21,9 @@ module.exports = (productController) => {
     // UpdateAsync: PUT /api/product/:id
     router.put('/:id', asyncHandler(productController.UpdateAsync));
 
+    // PatchEnabledAsync: PATCH /api/product/:id/enabled
+    router.patch('/:id/enabled', asyncHandler(productController.PatchEnabledAsync));
+
     // SoftDeleteAsync: DELETE /api/product/:id
     router.delete('/:id', asyncHandler(productController.SoftDeleteAsync));
 

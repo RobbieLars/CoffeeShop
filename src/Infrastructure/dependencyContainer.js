@@ -5,6 +5,10 @@ const StoreDbContext = require('./Database/MernDb/dbContext');
 
 // CQRS Queries & Commands
 const CommentQueries = require('./Database/CQRS/Queries/CommentQueries');
+const PersonQueries = require('./Database/CQRS/Queries/PersonQueries');
+const PetQueries = require('./Database/CQRS/Queries/PetQueries');
+const PurchaseQueries = require('./Database/CQRS/Queries/PurchaseQueries');
+const GiftQueries = require('./Database/CQRS/Queries/GiftQueries');
 const CommentCommands = require('./Database/CQRS/Commands/CommentCommands');
 
 // Shared services
@@ -19,6 +23,7 @@ const PetService = require('../Application/Services/PetService');
 const ProductService = require('../Application/Services/ProductService');
 const CommentService = require('../Application/Services/CommentService');
 const PurchaseService = require('../Application/Services/PurchaseService');
+const GiftService = require('../Application/Services/GiftService');
 
 function buildDependencyContainer() {
     const storeDbContext = new StoreDbContext();
@@ -27,6 +32,10 @@ function buildDependencyContainer() {
 
     // CQRS
     const commentQueries = new CommentQueries();
+    const personQueries = new PersonQueries();
+    const petQueries = new PetQueries();
+    const purchaseQueries = new PurchaseQueries();
+    const giftQueries = new GiftQueries();
     const commentCommands = new CommentCommands();
 
     const roleService = new RoleService(
@@ -35,6 +44,7 @@ function buildDependencyContainer() {
     );
     const personService = new PersonService(
         storeDbContext.people,
+        personQueries,
         paginationService
     );
     const userService = new UserService(
@@ -45,6 +55,7 @@ function buildDependencyContainer() {
     );
     const petService = new PetService(
         storeDbContext.pets,
+        petQueries,
         paginationService
     );
     const productService = new ProductService(
@@ -58,6 +69,12 @@ function buildDependencyContainer() {
     );
     const purchaseService = new PurchaseService(
         storeDbContext.purchases,
+        purchaseQueries,
+        paginationService
+    );
+    const giftService = new GiftService(
+        storeDbContext.gifts,
+        giftQueries,
         paginationService
     );
 
@@ -69,10 +86,15 @@ function buildDependencyContainer() {
             petRepository: storeDbContext.pets,
             productRepository: storeDbContext.products,
             commentRepository: storeDbContext.comments,
-            purchaseRepository: storeDbContext.purchases
+            purchaseRepository: storeDbContext.purchases,
+            giftRepository: storeDbContext.gifts
         },
         queries: {
-            commentQueries
+            commentQueries,
+            personQueries,
+            petQueries,
+            purchaseQueries,
+            giftQueries
         },
         commands: {
             commentCommands
@@ -84,7 +106,8 @@ function buildDependencyContainer() {
             petService,
             productService,
             commentService,
-            purchaseService
+            purchaseService,
+            giftService
         },
         infrastructure: {
             storeDbContext,

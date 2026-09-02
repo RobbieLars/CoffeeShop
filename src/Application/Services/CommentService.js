@@ -26,8 +26,7 @@ const {
 
 const {
     ValidationError,
-    NotFoundError,
-    ConflictError
+    NotFoundError
 } = require('@coffeeshop/common/Errors/ApplicationErrors');
 
 class CommentService {
@@ -87,14 +86,6 @@ class CommentService {
     }
 
     // -----------------------------------------------------------------------------
-    // GetByUserIdAsync: Obtiene todos los comentarios de un usuario específico
-    // -----------------------------------------------------------------------------
-    async GetByUserIdAsync(userId) {
-        const validUserId = validateRequiredObjectId(userId, 'userId');
-        return await this._commentQueries.getCommentsByUserIdQueryAsync(validUserId);
-    }
-
-    // -----------------------------------------------------------------------------
     // CreateAsync: Crea un nuevo comentario (edited = false)
     // -----------------------------------------------------------------------------
     async CreateAsync(createCommentDto) {
@@ -116,8 +107,7 @@ class CommentService {
             userId: dto.userId,
             message: normalizeText(dto.message),
             photoPublicId: dto.photoPublicId ?? null,
-            edited: false,
-            enabled: true
+            edited: false
         });
 
         const createdCommentEntity =
@@ -173,12 +163,7 @@ class CommentService {
                 ? existingCommentEntity.photoPublicId
                 : dto.photoPublicId,
 
-            edited: true,
-
-            enabled: resolveUpdateValue(
-                dto.enabled,
-                existingCommentEntity.enabled
-            )
+            edited: true
         });
 
         const updatedCommentEntity =
@@ -246,40 +231,6 @@ class CommentService {
     }
 
     // -----------------------------------------------------------------------------
-    // SoftDeleteAsync: Inhabilita un comentario
-    // -----------------------------------------------------------------------------
-    async SoftDeleteAsync(id) {
-        const commentId = validateRequiredObjectId(id, 'id');
-
-        const existingCommentEntity =
-            await this._commentRepository.getByIdAsync(commentId);
-
-        if (!existingCommentEntity) {
-            throw new NotFoundError(
-                `Comentario (${commentId}) no encontrado.`
-            );
-        }
-
-        if (existingCommentEntity.enabled === false) {
-            throw new ConflictError('El Comentario ya está inhabilitado.');
-        }
-
-        const updatedCommentEntity =
-            await this._commentRepository.patchByIdAsync(
-                commentId,
-                { enabled: false }
-            );
-
-        if (!updatedCommentEntity) {
-            throw new NotFoundError(
-                `Comentario (${commentId}) no encontrado.`
-            );
-        }
-
-        return this._toCommentDetailDto(updatedCommentEntity);
-    }
-
-    // -----------------------------------------------------------------------------
     // HardDeleteAsync: Elimina permanentemente un comentario
     // -----------------------------------------------------------------------------
     async HardDeleteAsync(id) {
@@ -320,7 +271,6 @@ class CommentService {
                 message: commentEntity.message,
                 photoPublicId: commentEntity.photoPublicId,
                 edited: commentEntity.edited ?? false,
-                enabled: commentEntity.enabled ?? true,
                 createdAt: enriched?.createdAt ?? null
             });
         });
@@ -335,7 +285,6 @@ class CommentService {
             message: commentEntity.message,
             photoPublicId: commentEntity.photoPublicId,
             edited: commentEntity.edited ?? false,
-            enabled: commentEntity.enabled ?? true,
             audit
         });
     }

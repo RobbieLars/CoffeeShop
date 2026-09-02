@@ -15,11 +15,9 @@ class CommentController {
 
         this.GetPagedAsync = this.GetPagedAsync.bind(this);
         this.GetByIdAsync = this.GetByIdAsync.bind(this);
-        this.GetByUserIdAsync = this.GetByUserIdAsync.bind(this);
         this.CreateAsync = this.CreateAsync.bind(this);
         this.UpdateAsync = this.UpdateAsync.bind(this);
         this.PatchMessageAsync = this.PatchMessageAsync.bind(this);
-        this.SoftDeleteAsync = this.SoftDeleteAsync.bind(this);
         this.HardDeleteAsync = this.HardDeleteAsync.bind(this);
     }
 
@@ -43,14 +41,6 @@ class CommentController {
     // -----------------------------------------------------------------------------
     async GetByIdAsync(req, res) {
         const result = await this._commentService.GetByIdAsync(req.params.id);
-        return res.status(200).json(result);
-    }
-
-    // -----------------------------------------------------------------------------
-    // GetByUserIdAsync: Obtiene todos los comentarios de un usuario específico.
-    // -----------------------------------------------------------------------------
-    async GetByUserIdAsync(req, res) {
-        const result = await this._commentService.GetByUserIdAsync(req.params.userId);
         return res.status(200).json(result);
     }
 
@@ -85,14 +75,6 @@ class CommentController {
         const result = await this._commentService.PatchMessageAsync(req.params.id, dto);
 
         return res.status(200).json(result);
-    }
-
-    // -----------------------------------------------------------------------------
-    // SoftDeleteAsync: Inhabilita lógicamente un comentario.
-    // -----------------------------------------------------------------------------
-    async SoftDeleteAsync(req, res) {
-        await this._commentService.SoftDeleteAsync(req.params.id);
-        return res.status(204).send();
     }
 
     // -----------------------------------------------------------------------------

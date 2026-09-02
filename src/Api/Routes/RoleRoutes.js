@@ -21,6 +21,9 @@ module.exports = (roleController) => {
     // UpdateAsync: PUT /api/role/:id
     router.put('/:id', asyncHandler(roleController.UpdateAsync));
 
+    // PatchEnabledAsync: PATCH /api/role/:id/enabled
+    router.patch('/:id/enabled', asyncHandler(roleController.PatchEnabledAsync));
+
     // SoftDeleteAsync: DELETE /api/role/:id
     router.delete('/:id', asyncHandler(roleController.SoftDeleteAsync));
 

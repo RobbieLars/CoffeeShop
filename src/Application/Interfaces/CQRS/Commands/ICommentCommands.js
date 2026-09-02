@@ -7,10 +7,6 @@ class ICommentCommands {
         throw new Error('Method not implemented.');
     }
 
-    // Inhabilita lógicamente todos los comentarios de un usuario.
-    async disableCommentsByUserIdCommandAsync(userId) {
-        throw new Error('Method not implemented.');
-    }
 }
 
 module.exports = ICommentCommands;

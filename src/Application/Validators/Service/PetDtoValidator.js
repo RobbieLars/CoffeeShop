@@ -1,6 +1,10 @@
 const CommonDtoValidator = require('../Common/CommonDtoValidator');
+const PetType = require('../../../Domain/Constants/PetType');
 
 const PET_FIELDS = Object.freeze({
+    ownerId: {
+        type: 'objectId'
+    },
     photoPublicId: {
         type: 'string',
         maxLength: 255,
@@ -11,10 +15,6 @@ const PET_FIELDS = Object.freeze({
         maxLength: 50
     },
     type: {
-        type: 'number',
-        integer: true
-    },
-    breed: {
         type: 'number',
         integer: true
     },
@@ -36,22 +36,33 @@ const PET_FIELDS = Object.freeze({
         maxLength: 100,
         nullable: true
     },
-    enabled: {
+    privacy: {
         type: 'boolean'
     }
 });
 
 class CommonPetDtoValidator {
     validateCommonFields(dto, options = {}) {
-        return CommonDtoValidator.validate(dto, PET_FIELDS, options);
+        const errors = CommonDtoValidator.validate(dto, PET_FIELDS, options);
+
+        if (
+            CommonDtoValidator.isProvided(dto, 'type') &&
+            typeof dto.type === 'number' &&
+            Number.isInteger(dto.type) &&
+            !Object.values(PetType).includes(dto.type)
+        ) {
+            errors.push('El campo type no corresponde a un tipo de mascota registrado.');
+        }
+
+        return errors;
     }
 }
 
 class CreatePetDtoValidator extends CommonPetDtoValidator {
     validate(dto) {
         return this.validateCommonFields(dto, {
-            requiredFields: ['name', 'type', 'breed', 'gender'],
-            forbiddenFields: ['enabled']
+            requiredFields: ['ownerId', 'name', 'type', 'gender'],
+            forbiddenFields: ['privacy']
         });
     }
 }
@@ -64,8 +75,27 @@ class UpdatePetDtoValidator extends CommonPetDtoValidator {
     }
 }
 
+class PatchPetOwnerDtoValidator extends CommonPetDtoValidator {
+    validate(dto) {
+        return this.validateCommonFields(dto, {
+            requiredFields: ['ownerId'],
+            forbiddenFields: [
+                'photoPublicId',
+                'name',
+                'type',
+                'birthDate',
+                'gender',
+                'weight',
+                'favoriteFood',
+                'privacy'
+            ]
+        });
+    }
+}
+
 module.exports = {
     CommonPetDtoValidator,
     CreatePetDtoValidator,
-    UpdatePetDtoValidator
+    UpdatePetDtoValidator,
+    PatchPetOwnerDtoValidator
 };

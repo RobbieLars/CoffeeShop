@@ -7,6 +7,7 @@ const {
     CreateRoleDto,
     UpdateRoleDto
 } = require('../DTOs/RoleDto');
+const CommonEnabledDto = require('@coffeeshop/common/DTOs/CommonEnabledDto');
 
 // Entities
 const Role = require('../../Domain/Entities/Role');
@@ -16,6 +17,8 @@ const {
     CreateRoleDtoValidator,
     UpdateRoleDtoValidator
 } = require('../Validators/Service/RoleDtoValidator');
+const CommonEnabledDtoValidator =
+    require('../Validators/Service/Common/CommonEnabledDtoValidator');
 
 // Helpers
 const validateRequiredObjectId = require('@coffeeshop/common/Helpers/validateRequiredObjectId');
@@ -40,6 +43,7 @@ class RoleService {
 
         this._createRoleDtoValidator = new CreateRoleDtoValidator();
         this._updateRoleDtoValidator = new UpdateRoleDtoValidator();
+        this._commonEnabledDtoValidator = new CommonEnabledDtoValidator();
     }
 
     // -----------------------------------------------------------------------------
@@ -210,6 +214,35 @@ class RoleService {
         }
 
         return this._toRoleDetailDto(deletedRoleEntity);
+    }
+
+    async PatchEnabledAsync(id, commonEnabledDto) {
+        const roleId = validateRequiredObjectId(id, 'id');
+        const dto = commonEnabledDto instanceof CommonEnabledDto
+            ? commonEnabledDto
+            : new CommonEnabledDto(commonEnabledDto);
+        const validationErrors = this._commonEnabledDtoValidator.validate(dto);
+
+        if (validationErrors.length > 0) {
+            throw new ValidationError('Error de validación.', validationErrors);
+        }
+
+        const existingRole = await this._roleRepository.getByIdAsync(roleId);
+
+        if (!existingRole) {
+            throw new NotFoundError(`Rol (${roleId}) no encontrado.`);
+        }
+
+        const updatedRole = await this._roleRepository.patchByIdAsync(
+            roleId,
+            { enabled: dto.enabled }
+        );
+
+        if (!updatedRole) {
+            throw new NotFoundError(`Rol (${roleId}) no encontrado.`);
+        }
+
+        return this._toRoleDetailDto(updatedRole);
     }
 
     // -----------------------------------------------------------------------------

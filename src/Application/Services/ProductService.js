@@ -6,6 +6,7 @@ const {
     CreateProductDto,
     UpdateProductDto
 } = require('../DTOs/ProductDto');
+const CommonEnabledDto = require('@coffeeshop/common/DTOs/CommonEnabledDto');
 
 const Product = require('../../Domain/Entities/Product');
 
@@ -13,6 +14,8 @@ const {
     CreateProductDtoValidator,
     UpdateProductDtoValidator
 } = require('../Validators/Service/ProductDtoValidator');
+const CommonEnabledDtoValidator =
+    require('../Validators/Service/Common/CommonEnabledDtoValidator');
 
 const validateRequiredObjectId = require('@coffeeshop/common/Helpers/validateRequiredObjectId');
 const {
@@ -37,6 +40,9 @@ class ProductService {
 
         this._updateProductDtoValidator =
             new UpdateProductDtoValidator();
+
+        this._commonEnabledDtoValidator =
+            new CommonEnabledDtoValidator();
     }
 
     async GetPagedAsync(paginationData) {
@@ -198,6 +204,47 @@ class ProductService {
             await this._productRepository.patchByIdAsync(
                 productId,
                 { enabled: false }
+            );
+
+        if (!updatedProductEntity) {
+            throw new NotFoundError(
+                `Producto (${productId}) no encontrado.`
+            );
+        }
+
+        return this._toProductDetailDto(updatedProductEntity);
+    }
+
+    async PatchEnabledAsync(id, commonEnabledDto) {
+        const productId = validateRequiredObjectId(id, 'id');
+
+        const dto = commonEnabledDto instanceof CommonEnabledDto
+            ? commonEnabledDto
+            : new CommonEnabledDto(commonEnabledDto);
+
+        const validationErrors =
+            this._commonEnabledDtoValidator.validate(dto);
+
+        if (validationErrors.length > 0) {
+            throw new ValidationError(
+                'Error de validación.',
+                validationErrors
+            );
+        }
+
+        const existingProductEntity =
+            await this._productRepository.getByIdAsync(productId);
+
+        if (!existingProductEntity) {
+            throw new NotFoundError(
+                `Producto (${productId}) no encontrado.`
+            );
+        }
+
+        const updatedProductEntity =
+            await this._productRepository.patchByIdAsync(
+                productId,
+                { enabled: dto.enabled }
             );
 
         if (!updatedProductEntity) {

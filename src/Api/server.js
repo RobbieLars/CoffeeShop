@@ -18,6 +18,7 @@ const PetController = require('./Controllers/PetController');
 const ProductController = require('./Controllers/ProductController');
 const CommentController = require('./Controllers/CommentController');
 const PurchaseController = require('./Controllers/PurchaseController');
+const GiftController = require('./Controllers/GiftController');
 
 // Routes
 const roleRoutes = require('./Routes/RoleRoutes');
@@ -27,6 +28,7 @@ const petRoutes = require('./Routes/PetRoutes');
 const productRoutes = require('./Routes/ProductRoutes');
 const commentRoutes = require('./Routes/CommentRoutes');
 const purchaseRoutes = require('./Routes/PurchaseRoutes');
+const giftRoutes = require('./Routes/GiftRoutes');
 
 async function server() {
     let httpServer;
@@ -48,6 +50,7 @@ async function server() {
         const purchaseController = new PurchaseController(
             container.services.purchaseService
         );
+        const giftController = new GiftController(container.services.giftService);
 
         // -----------------------------------------------------------------------------
         // Configuracion del servidor Express
@@ -84,6 +87,7 @@ async function server() {
         app.use('/api/product', productRoutes(productController));
         app.use('/api/comment', commentRoutes(commentController));
         app.use('/api/purchase', purchaseRoutes(purchaseController));
+        app.use('/api/gift', giftRoutes(giftController));
 
         app.use((req, res) => {
             return res.status(404).json({

@@ -14,6 +14,11 @@ const person = {
     email: { field: 'email', type: 'string' }
 };
 
+const pet = {
+    ownerId: { field: 'ownerId', type: 'objectId' },
+    privacy: { field: 'privacy', type: 'boolean' }
+};
+
 const product = {
     name: { field: 'name', type: 'string' },
     description: { field: 'description', type: 'string' },
@@ -24,7 +29,13 @@ const product = {
 const purchase = {
     productId: { field: 'productId', type: 'objectId' },
     userId: { field: 'userId', type: 'objectId' },
-    date: { field: 'day', type: 'date' }
+    petId: { field: 'petId', type: 'objectId' }
+};
+
+const gift = {
+    userId: { field: 'userId', type: 'objectId' },
+    productId: { field: 'productId', type: 'objectId' },
+    petId: { field: 'petId', type: 'objectId' }
 };
 
 const role = {
@@ -42,8 +53,10 @@ const user = {
 module.exports = {
     comment,
     person,
+    pet,
     product,
     purchase,
+    gift,
     role,
     user
 };

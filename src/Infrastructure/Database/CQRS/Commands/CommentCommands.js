@@ -22,25 +22,6 @@ class CommentCommands extends ICommentCommands {
         };
     }
 
-    // -----------------------------------------------------------------------------
-    // disableCommentsByUserIdCommandAsync:
-    // Inhabilita lógicamente todos los comentarios de un usuario.
-    // -----------------------------------------------------------------------------
-    async disableCommentsByUserIdCommandAsync(userId) {
-        if (!mongoose.isValidObjectId(userId)) {
-            return { matchedCount: 0, modifiedCount: 0 };
-        }
-
-        const result = await CommentModel.updateMany(
-            { userId: new mongoose.Types.ObjectId(userId) },
-            { $set: { enabled: false } }
-        );
-
-        return {
-            matchedCount: result.matchedCount ?? result.n ?? 0,
-            modifiedCount: result.modifiedCount ?? result.nModified ?? 0
-        };
-    }
 }
 
 module.exports = CommentCommands;

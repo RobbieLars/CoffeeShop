@@ -43,6 +43,12 @@ const PERSON_FIELDS = Object.freeze({
         nullable: true,
         pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         patternMessage: 'El campo email debe contener un correo electrónico válido.'
+    },
+
+    googleFolderPersonUrl: {
+        type: 'string',
+        maxLength: 1000,
+        nullable: true
     }
 
 });

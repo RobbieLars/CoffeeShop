@@ -9,6 +9,7 @@ class Person {
         birthDate = null,
         gender = null,
         email = null,
+        googleFolderPersonUrl = null
     } = {}) {
         this.id = id;
         this.name = name;
@@ -18,6 +19,7 @@ class Person {
         this.birthDate = birthDate;
         this.gender = gender;
         this.email = email;
+        this.googleFolderPersonUrl = googleFolderPersonUrl;
     }
 }
 

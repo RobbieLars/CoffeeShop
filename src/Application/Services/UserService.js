@@ -4,6 +4,7 @@ const {
     CreateUserDto,
     UpdateUserDto
 } = require('../DTOs/UserDto');
+const CommonEnabledDto = require('@coffeeshop/common/DTOs/CommonEnabledDto');
 
 const User = require('../../Domain/Entities/User');
 const IPasswordHasher = require('../Interfaces/Common/Security/IPasswordHasher');
@@ -13,6 +14,8 @@ const {
     CreateUserDtoValidator,
     UpdateUserDtoValidator
 } = require('../Validators/Service/UserDtoValidator');
+const CommonEnabledDtoValidator =
+    require('../Validators/Service/Common/CommonEnabledDtoValidator');
 
 const validateRequiredObjectId = require('@coffeeshop/common/Helpers/validateRequiredObjectId');
 const handleDuplicateKeyError = require('@coffeeshop/common/Helpers/handleDuplicateKeyError');
@@ -36,6 +39,7 @@ class UserService {
         this._commentCommands = commentCommands;
         this._createUserDtoValidator = new CreateUserDtoValidator();
         this._updateUserDtoValidator = new UpdateUserDtoValidator();
+        this._commonEnabledDtoValidator = new CommonEnabledDtoValidator();
     }
 
     async GetPagedAsync(paginationData) {
@@ -155,6 +159,35 @@ class UserService {
         }
 
         return this._toUserDetailDto(disabledUserEntity);
+    }
+
+    async PatchEnabledAsync(id, commonEnabledDto) {
+        const userId = validateRequiredObjectId(id, 'id');
+        const dto = commonEnabledDto instanceof CommonEnabledDto
+            ? commonEnabledDto
+            : new CommonEnabledDto(commonEnabledDto);
+        const validationErrors = this._commonEnabledDtoValidator.validate(dto);
+
+        if (validationErrors.length > 0) {
+            throw new ValidationError('Error de validación.', validationErrors);
+        }
+
+        const existingUser = await this._userRepository.getByIdAsync(userId);
+
+        if (!existingUser) {
+            throw new NotFoundError(`Usuario (${userId}) no encontrado.`);
+        }
+
+        const updatedUser = await this._userRepository.patchByIdAsync(
+            userId,
+            { enabled: dto.enabled }
+        );
+
+        if (!updatedUser) {
+            throw new NotFoundError(`Usuario (${userId}) no encontrado.`);
+        }
+
+        return this._toUserDetailDto(updatedUser);
     }
 
     async HardDeleteAsync(id) {

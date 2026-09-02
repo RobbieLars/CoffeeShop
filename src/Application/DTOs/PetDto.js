@@ -3,19 +3,19 @@ const AuditMetadataDto = require('@coffeeshop/common/DTOs/AuditMetadataDto');
 // DTO para la creación de una mascota
 class CreatePetDto {
     constructor({
+        ownerId,
         photoPublicId,
         name,
         type,
-        breed,
         birthDate,
         gender,
         weight,
         favoriteFood
     } = {}) {
+        this.ownerId = ownerId;
         this.photoPublicId = photoPublicId;
         this.name = name;
         this.type = type;
-        this.breed = breed;
         this.birthDate = birthDate;
         this.gender = gender;
         this.weight = weight;
@@ -26,25 +26,32 @@ class CreatePetDto {
 // DTO para la actualización de una mascota
 class UpdatePetDto {
     constructor({
+        ownerId,
         photoPublicId,
         name,
         type,
-        breed,
         birthDate,
         gender,
         weight,
         favoriteFood,
-        enabled
+        privacy
     } = {}) {
+        this.ownerId = ownerId;
         this.photoPublicId = photoPublicId;
         this.name = name;
         this.type = type;
-        this.breed = breed;
         this.birthDate = birthDate;
         this.gender = gender;
         this.weight = weight;
         this.favoriteFood = favoriteFood;
-        this.enabled = enabled;
+        this.privacy = privacy;
+    }
+}
+
+// DTO para cambiar únicamente el propietario de una mascota
+class PatchPetOwnerDto {
+    constructor({ ownerId } = {}) {
+        this.ownerId = ownerId;
     }
 }
 
@@ -52,18 +59,22 @@ class UpdatePetDto {
 class PetListItemDto {
     constructor({
         id,
+        ownerId,
+        ownerName = null,
         photoPublicId,
         name,
         type,
-        breed,
-        enabled
+        typeName,
+        privacy
     } = {}) {
         this.id = id;
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
         this.photoPublicId = photoPublicId;
         this.name = name;
         this.type = type;
-        this.breed = breed;
-        this.enabled = enabled;
+        this.typeName = typeName;
+        this.privacy = privacy;
     }
 }
 
@@ -71,27 +82,31 @@ class PetListItemDto {
 class PetDetailDto {
     constructor({
         id,
+        ownerId,
+        ownerName,
         photoPublicId,
         name,
         type,
-        breed,
+        typeName,
         birthDate,
         gender,
         weight,
         favoriteFood,
-        enabled,
+        privacy,
         audit = null
     } = {}) {
         this.id = id;
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
         this.photoPublicId = photoPublicId;
         this.name = name;
         this.type = type;
-        this.breed = breed;
+        this.typeName = typeName;
         this.birthDate = birthDate;
         this.gender = gender;
         this.weight = weight;
         this.favoriteFood = favoriteFood;
-        this.enabled = enabled;
+        this.privacy = privacy;
 
         if (audit) {
             this.audit = audit instanceof AuditMetadataDto
@@ -104,6 +119,7 @@ class PetDetailDto {
 module.exports = {
     CreatePetDto,
     UpdatePetDto,
+    PatchPetOwnerDto,
     PetListItemDto,
     PetDetailDto
 };
