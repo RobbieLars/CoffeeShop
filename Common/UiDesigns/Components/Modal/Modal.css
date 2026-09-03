@@ -1,0 +1,142 @@
+.common-modal__backdrop {
+  /* Estructura configurable por cada sistema. */
+  --modal-max-width: 44rem;
+  --modal-max-height: calc(100dvh - 2rem);
+  --modal-mobile-max-height: 100dvh;
+  --modal-padding: 1.25rem;
+  --modal-header-padding: 1rem 1.25rem;
+  --modal-body-padding: 1.25rem;
+  --modal-footer-padding: 1rem 1.25rem;
+  --modal-radius: var(--panel-radius, 0);
+  --modal-control-radius: var(--control-radius, 0);
+  --modal-close-size: 36px;
+  --modal-z-index: 1200;
+
+  /* Tokens visuales centralizados por cada sistema. */
+  --modal-overlay: transparent;
+  --modal-surface: transparent;
+  --modal-text: inherit;
+  --modal-muted: inherit;
+  --modal-border: transparent;
+  --modal-hover: transparent;
+  --modal-focus: currentColor;
+  --modal-shadow: none;
+
+  position: fixed;
+  inset: 0;
+  z-index: var(--modal-z-index);
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100dvh;
+  padding: var(--modal-padding);
+  overflow: hidden;
+  background: var(--modal-overlay);
+}
+
+.common-modal,
+.common-modal * {
+  box-sizing: border-box;
+}
+
+.common-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, var(--modal-max-width));
+  max-height: var(--modal-max-height);
+  overflow: hidden;
+  border: 1px solid var(--modal-border);
+  border-radius: var(--modal-radius);
+  background: var(--modal-surface);
+  color: var(--modal-text);
+  box-shadow: var(--modal-shadow);
+}
+
+.common-modal:focus {
+  outline: none;
+}
+
+.common-modal__header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 0;
+  padding: var(--modal-header-padding);
+  border-bottom: 1px solid var(--modal-border);
+}
+
+.common-modal__title {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 1.125rem;
+  line-height: 1.35;
+}
+
+.common-modal__close {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--modal-close-size);
+  height: var(--modal-close-size);
+  padding: 0;
+  border: 1px solid var(--modal-border);
+  border-radius: var(--modal-control-radius);
+  background: var(--modal-surface);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.common-modal__close:hover {
+  background: var(--modal-hover);
+}
+
+.common-modal__close:focus-visible {
+  outline: 2px solid var(--modal-focus);
+  outline-offset: 2px;
+}
+
+.common-modal__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--modal-body-padding);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.common-modal__footer {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: var(--modal-footer-padding);
+  border-top: 1px solid var(--modal-border);
+}
+
+@media (max-width: 35.999rem) {
+  .common-modal__backdrop {
+    --modal-padding: 0;
+  }
+
+  .common-modal {
+    width: 100%;
+    max-width: none;
+    max-height: var(--modal-mobile-max-height);
+    border-radius: 0;
+  }
+
+  .common-modal__header,
+  .common-modal__body,
+  .common-modal__footer {
+    padding-inline: 1rem;
+  }
+}

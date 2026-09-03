@@ -4,6 +4,7 @@
 const PAGE_KEYS = Object.freeze({
     DASHBOARD_INDEX: 'coffeeshop.dashboard.index',
     PRODUCTS_INDEX: 'coffeeshop.products.index',
+    PETS_INDEX: 'coffeeshop.pets.index',
     COMMENTS_INDEX: 'coffeeshop.comments.index',
     PURCHASES_INDEX: 'coffeeshop.purchases.index'
 });
@@ -19,6 +20,12 @@ const pageRegistry = Object.freeze({
         pageKey: PAGE_KEYS.PRODUCTS_INDEX,
         module: 'products',
         defaultPath: '/products',
+        requiresAuthorization: false
+    }),
+    [PAGE_KEYS.PETS_INDEX]: Object.freeze({
+        pageKey: PAGE_KEYS.PETS_INDEX,
+        module: 'pets',
+        defaultPath: '/pets',
         requiresAuthorization: false
     }),
     [PAGE_KEYS.COMMENTS_INDEX]: Object.freeze({

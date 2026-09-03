@@ -1,0 +1,53 @@
+.common-data-table {
+    --data-table-background: var(--color-surface);
+    --data-table-header-background: var(--color-surface-hover);
+    --data-table-control-background: var(--color-background);
+    --data-table-row-hover: var(--color-surface-hover);
+    --data-table-text: var(--color-text);
+    --data-table-muted: var(--color-text-muted);
+    --data-table-border: var(--color-border);
+    --data-table-primary: var(--color-primary);
+    --data-table-on-primary: var(--color-on-primary);
+    --data-table-focus: var(--color-focus-ring);
+    --data-table-control-radius: var(--control-radius);
+}
+
+.ui-action-menu__trigger,
+.ui-action-menu__list {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+}
+
+.ui-action-menu__list {
+    box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.24);
+}
+
+.ui-action-menu__item {
+    color: var(--color-text);
+    background-color: transparent;
+}
+
+.ui-action-menu__trigger:hover,
+.ui-action-menu__item:hover,
+.ui-action-menu__item:focus-visible {
+    background-color: var(--color-surface-hover);
+}
+
+.ui-action-menu__trigger:focus-visible,
+.ui-action-menu__item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.ui-action-menu__item--danger {
+    color: var(--color-danger);
+}
+
+.ui-notification {
+    color: var(--color-text);
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--control-radius);
+    padding: 0.75rem 1rem;
+}

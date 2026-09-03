@@ -1,7 +1,19 @@
 import {
     PET_INPUT_FIELDS,
     CREATE_PET_INPUT_FIELDS
-} from '../Validator/Service/PetViewModelValidator';
+} from '../../Validator/Service/PetViewModelValidator';
+
+const PET_FORM_LABELS = Object.freeze({
+    ownerId: 'Propietario',
+    photoPublicId: 'Fotografía',
+    name: 'Nombre',
+    type: 'Tipo de mascota',
+    birthDate: 'Fecha de nacimiento',
+    gender: 'Género',
+    weight: 'Peso',
+    favoriteFood: 'Comida favorita',
+    privacy: 'Privacidad'
+});
 
 // -----------------------------------------------------------------------------
 // List item
@@ -13,7 +25,8 @@ class PetListItemViewModel {
         ownerName: 'Propietario',
         typeName: 'Tipo de mascota',
         photoPublicId: 'Fotografía',
-        privacy: 'Privacidad'
+        privacy: 'Privacidad',
+        actions: 'Acciones'
     });
 
     constructor({
@@ -63,6 +76,48 @@ class PetListViewModel {
         this.pageSize = pageSize;
         this.totalItems = totalItems;
         this.totalPages = totalPages;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Filters
+// -----------------------------------------------------------------------------
+
+class PetFilterViewModel {
+    static labels = Object.freeze({
+        ownerId: 'Propietario',
+        ownerName: 'Nombre del propietario',
+        name: 'Nombre de la mascota',
+        type: 'Tipo de mascota',
+        gender: 'Género',
+        privacy: 'Privacidad'
+    });
+
+    static fields = Object.freeze({
+        ownerName: Object.freeze({
+            label: PetFilterViewModel.labels.ownerName,
+            type: 'string'
+        }),
+        name: Object.freeze({
+            label: PetFilterViewModel.labels.name,
+            type: 'string'
+        })
+    });
+
+    constructor({
+        ownerId = '',
+        ownerName = '',
+        name = '',
+        type = '',
+        gender = '',
+        privacy = ''
+    } = {}) {
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
+        this.name = name;
+        this.type = type;
+        this.gender = gender;
+        this.privacy = privacy;
     }
 }
 
@@ -146,6 +201,7 @@ class PetDetailViewModel {
 class CreatePetViewModel {
     // La View utiliza estas reglas para configurar los inputs.
     static fields = CREATE_PET_INPUT_FIELDS;
+    static labels = PET_FORM_LABELS;
 
     constructor({
         ownerId = '',
@@ -177,6 +233,7 @@ class CreatePetViewModel {
 
 class UpdatePetViewModel {
     static fields = PET_INPUT_FIELDS;
+    static labels = PET_FORM_LABELS;
 
     constructor({
         id,
@@ -222,8 +279,10 @@ class PatchPetOwnerViewModel {
 }
 
 export {
+    PET_FORM_LABELS,
     PetListItemViewModel,
     PetListViewModel,
+    PetFilterViewModel,
     PetDetailViewModel,
     CreatePetViewModel,
     UpdatePetViewModel,

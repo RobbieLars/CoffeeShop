@@ -1,0 +1,10 @@
+.common-modal__backdrop {
+    --modal-overlay: rgba(0, 0, 0, 0.62);
+    --modal-surface: var(--color-surface);
+    --modal-text: var(--color-text);
+    --modal-muted: var(--color-text-muted);
+    --modal-border: var(--color-border);
+    --modal-hover: var(--color-surface-hover);
+    --modal-focus: var(--color-primary);
+    --modal-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.28);
+}

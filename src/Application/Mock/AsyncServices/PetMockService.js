@@ -14,12 +14,14 @@ const {
 } = require('../../DTOs/PetDto');
 
 const IPetMockData = require('../Data/IPetMockData');
+const IPetDataSource = require('../../Interfaces/DataSources/IPetDataSource');
 
 // Servicio de Pet respaldado por datos simulados.
 // Expone el mismo contrato asíncrono que PetService sin usar CQRS,
 // repositorios ni dependencias de infraestructura.
-class PetMockService {
+class PetMockService extends IPetDataSource {
     constructor(petMockData = new IPetMockData()) {
+        super();
         this._petMockData = petMockData;
     }
 
@@ -46,6 +48,7 @@ class PetMockService {
                 photoPublicId: item.photoPublicId,
                 name: item.name,
                 type: item.type,
+                typeName: item.typeName,
                 privacy: item.privacy
             }));
 

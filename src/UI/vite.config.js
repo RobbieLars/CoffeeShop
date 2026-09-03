@@ -6,6 +6,13 @@ const commonUiPath = fileURLToPath(
     new URL('../../Common/UiDesigns', import.meta.url)
 );
 
+const petMockServicePath = fileURLToPath(
+    new URL(
+        '../Application/Mock/AsyncServices/PetMockService.js',
+        import.meta.url
+    )
+);
+
 export default defineConfig(({ mode }) => {
     const environment = loadEnv(mode, process.cwd(), '');
 
@@ -13,9 +20,13 @@ export default defineConfig(({ mode }) => {
         plugins: [react()],
         resolve: {
             alias: {
-                '@common-ui': commonUiPath
+                '@common-ui': commonUiPath,
+                '@coffeeshop/pet-mock-service': petMockServicePath
             },
             dedupe: ['react', 'react-dom']
+        },
+        optimizeDeps: {
+            include: ['@coffeeshop/pet-mock-service']
         },
         server: {
             port: 5176,

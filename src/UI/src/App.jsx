@@ -6,10 +6,12 @@ import DashboardView from './Views/Common/DashboardView';
 
 import DashboardContentView from './Views/Dashboard/DashboardContentView';
 import ProductsView from './Views/Products/ProductsView';
+import PetsView from './Views/Pets/PetsView';
 import CommentsView from './Views/Comments/CommentsView';
 import PurchasesView from './Views/Purchases/PurchasesView';
 
 import { PAGE_KEYS, pageRegistry } from './config/pageRegistry';
+import { petController } from './config/PetComposition';
 
 const routeBuilder = new DashboardRouteBuilder(pageRegistry);
 const dashboardBuilder = new DashboardBuilder(routeBuilder);
@@ -61,6 +63,12 @@ function App() {
                 enabled: true
             },
             {
+                pageKey: PAGE_KEYS.PETS_INDEX,
+                path: '/pets',
+                module: 'pets',
+                enabled: true
+            },
+            {
                 pageKey: PAGE_KEYS.COMMENTS_INDEX,
                 path: '/comments',
                 module: 'comments',
@@ -91,11 +99,19 @@ function App() {
                 enabled: true
             },
             {
+                id: 'pets',
+                title: 'Mascotas',
+                pageKey: PAGE_KEYS.PETS_INDEX,
+                icon: 'ti ti-paw',
+                orderIndex: 2,
+                enabled: true
+            },
+            {
                 id: 'comments',
                 title: 'Comentarios',
                 pageKey: PAGE_KEYS.COMMENTS_INDEX,
                 icon: 'ti ti-message-2',
-                orderIndex: 2,
+                orderIndex: 3,
                 enabled: true
             },
             {
@@ -103,7 +119,7 @@ function App() {
                 title: 'Mis Compras',
                 pageKey: PAGE_KEYS.PURCHASES_INDEX,
                 icon: 'ti ti-shopping-cart',
-                orderIndex: 3,
+                orderIndex: 4,
                 enabled: true
             }
         ],
@@ -114,6 +130,8 @@ function App() {
         switch (activePath) {
             case '/products':
                 return <ProductsView />;
+            case '/pets':
+                return <PetsView controller={petController} />;
             case '/comments':
                 return <CommentsView />;
             case '/purchases':
@@ -140,6 +158,8 @@ function getPageTitle(path) {
     switch (path) {
         case '/products':
             return 'Productos';
+        case '/pets':
+            return 'Mascotas';
         case '/comments':
             return 'Comentarios';
         case '/purchases':
