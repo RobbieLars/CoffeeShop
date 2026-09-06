@@ -64,7 +64,7 @@
 .stat-card__icon {
     width: 2.75rem;
     height: 2.75rem;
-    border-radius: 0.65rem;
+    border-radius: var(--control-radius);
     background: var(--color-surface-hover);
     color: var(--color-primary);
     display: grid;

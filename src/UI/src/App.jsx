@@ -12,7 +12,6 @@ import PurchasesView from './Views/Purchases/PurchasesView';
 
 import { PAGE_KEYS, pageRegistry } from './config/pageRegistry';
 import { petController } from './config/PetComposition';
-
 const routeBuilder = new DashboardRouteBuilder(pageRegistry);
 const dashboardBuilder = new DashboardBuilder(routeBuilder);
 const dashboardController = new DashboardController(dashboardBuilder);

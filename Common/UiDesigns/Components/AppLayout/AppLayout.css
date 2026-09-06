@@ -33,6 +33,18 @@
   min-height: 100dvh;
   background: var(--app-layout-background);
   color: var(--app-layout-text);
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s ease;
+}
+
+.common-app-layout__header,
+.common-app-layout__sidebar,
+.common-top-header {
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
 }
 
 .common-app-layout,
@@ -121,10 +133,19 @@
   height: var(--app-layout-control-size);
   padding: 0;
   border: 1px solid var(--app-layout-border);
-  border-radius: 50%;
   background: var(--app-layout-surface);
   color: var(--app-layout-text);
   cursor: pointer;
+}
+
+.common-top-header__menu-button,
+.common-top-header__action {
+  border-radius: var(--app-layout-control-radius);
+  font-size: 1.15rem;
+}
+
+.common-top-header__profile-button {
+  border-radius: 50%;
 }
 
 .common-top-header__menu-button:hover,

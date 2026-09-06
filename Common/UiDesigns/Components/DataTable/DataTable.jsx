@@ -227,7 +227,7 @@ export function DataTable({
             </tr>
           </thead>
 
-          <tbody>
+          <tbody key={displayedPage} className="common-data-table__body">
             {loading && (
               <tr>
                 <td colSpan={Math.max(columns.length, 1)}>

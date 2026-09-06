@@ -21,11 +21,15 @@
 
 .ui-action-menu__list {
     box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.24);
+    animation: actionMenuSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: top right;
+    will-change: transform, opacity;
 }
 
 .ui-action-menu__item {
     color: var(--color-text);
     background-color: transparent;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .ui-action-menu__trigger:hover,

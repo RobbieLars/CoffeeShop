@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { useOptionalTheme } from "../Theme";
 
 const joinClassNames = (...classNames) =>
   classNames.filter(Boolean).join(" ");
@@ -37,6 +38,7 @@ export function TopHeader({
   actions = [],
   profileItems = [],
   primaryAction = null,
+  showThemeToggle = true,
   searchValue,
   defaultSearchValue = "",
   searchPlaceholder = "Buscar",
@@ -52,11 +54,52 @@ export function TopHeader({
   rightSlot = null,
   className = "",
 }) {
+  const themeContext = useOptionalTheme();
   const [internalSearch, setInternalSearch] = useState(defaultSearchValue);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
   const profileMenuId = useId().replaceAll(":", "");
   const currentSearch = searchValue ?? internalSearch;
+
+  const themeAction =
+    showThemeToggle && themeContext
+      ? {
+          id: "common-theme-toggle",
+          label: themeContext.isDark
+            ? "Cambiar a modo claro"
+            : "Cambiar a modo oscuro",
+          icon: themeContext.isDark ? "ti ti-sun" : "ti ti-moon",
+          onClick: themeContext.toggleTheme,
+        }
+      : null;
+
+  const resolvedActions =
+    themeAction &&
+    !actions.some(
+      (action) =>
+        action.id === "common-theme-toggle" || action.id === "theme-toggle"
+    )
+      ? [...actions, themeAction]
+      : actions;
+
+  const resolvedProfileItems =
+    themeAction &&
+    !profileItems.some(
+      (item) =>
+        item.id === "common-theme-toggle-profile" ||
+        item.id === "toggle-theme-profile" ||
+        item.id === "theme"
+    )
+      ? [
+          {
+            id: "common-theme-toggle-profile",
+            label: themeContext.isDark ? "Modo claro" : "Modo oscuro",
+            icon: themeContext.isDark ? "ti ti-sun" : "ti ti-moon",
+            onClick: themeContext.toggleTheme,
+          },
+          ...profileItems,
+        ]
+      : profileItems;
 
   useEffect(() => {
     if (!profileOpen) return undefined;
@@ -170,12 +213,12 @@ export function TopHeader({
           </button>
         )}
 
-        {actions.length > 0 && (
+        {resolvedActions.length > 0 && (
           <div
             className="common-top-header__actions"
             aria-label="Acciones rápidas"
           >
-            {actions.map((action) => (
+            {resolvedActions.map((action) => (
               <button
                 key={action.id}
                 type="button"
@@ -236,9 +279,9 @@ export function TopHeader({
                 {user.role && <span>{user.role}</span>}
               </div>
 
-              {profileItems.length > 0 && (
+              {resolvedProfileItems.length > 0 && (
                 <div className="common-top-header__profile-options">
-                  {profileItems.map((item) => (
+                  {resolvedProfileItems.map((item) => (
                     <button
                       key={item.id}
                       type="button"

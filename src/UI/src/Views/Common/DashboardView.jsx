@@ -9,7 +9,8 @@ function DashboardView({
     children = null,
     onNavigate,
     onSearch,
-    onLogout
+    onLogout,
+    showThemeToggle = true
 }) {
     const layout = useAppLayout();
 
@@ -65,6 +66,7 @@ function DashboardView({
             menuIcon="ti ti-menu-2"
             onMenuToggle={layout.toggleSidebar}
             menuExpanded={layout.sidebarOpen}
+            showThemeToggle={showThemeToggle}
             profileItems={onLogout
                 ? [{
                     id: 'logout',

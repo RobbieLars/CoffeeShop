@@ -1,9 +1,13 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, searchForWorkspaceRoot } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 
 const commonUiPath = fileURLToPath(
     new URL('../../Common/UiDesigns', import.meta.url)
+);
+
+const repoRoot = fileURLToPath(
+    new URL('../../', import.meta.url)
 );
 
 const petMockServicePath = fileURLToPath(
@@ -31,6 +35,13 @@ export default defineConfig(({ mode }) => {
         server: {
             port: 5176,
             strictPort: true,
+            fs: {
+                allow: [
+                    searchForWorkspaceRoot(process.cwd()),
+                    repoRoot,
+                    commonUiPath
+                ]
+            },
             proxy: {
                 '/api': {
                     target:

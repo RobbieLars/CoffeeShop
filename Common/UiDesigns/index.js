@@ -1,3 +1,5 @@
+import "./wwwroot/lib/preclinic/assets/plugins/tabler-icons/tabler-icons.min.css";
+
 export {
   MultiLevelMenu,
   containsActivePath,
@@ -35,3 +37,14 @@ export {
 export {
   PageContainer,
 } from "./Components/PageContainer";
+
+export {
+  DEFAULT_STORAGE_KEY,
+  DEFAULT_THEME,
+  THEMES,
+  ThemeContext,
+  ThemeProvider,
+  useOptionalTheme,
+  useTheme,
+} from "./Components/Theme";
+

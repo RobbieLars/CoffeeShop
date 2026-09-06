@@ -30,8 +30,8 @@
 }
 
 :root {
-    --control-radius: 0.65rem;
-    --panel-radius: 0.85rem;
+    --control-radius: 0.35rem;
+    --panel-radius: 0.5rem;
     --font-size-root: 16px;
     --font-family-base:
         Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
@@ -56,6 +56,24 @@ body {
     margin: 0;
     color: var(--color-text);
     background: var(--color-background);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.common-page-container,
+.common-data-table,
+.stat-card,
+.empty-view-card,
+.dashboard-context,
+.ui-button,
+.pet-view__input,
+.pet-view__button,
+.common-modal {
+    transition: 
+        background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 button,
@@ -121,6 +139,7 @@ select {
 }
 
 .coffeeshop-dashboard {
+    --app-layout-control-radius: var(--control-radius);
     --app-layout-background: var(--color-background);
     --app-layout-surface: var(--color-surface);
     --app-layout-text: var(--color-text);
