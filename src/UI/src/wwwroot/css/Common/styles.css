@@ -68,7 +68,11 @@ body {
 .ui-button,
 .pet-view__input,
 .pet-view__button,
-.common-modal {
+.common-modal,
+.common-toggle-switch,
+.common-filter-panel__button,
+.common-action-menu__trigger,
+.common-action-menu__list {
     transition: 
         background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
         color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
@@ -106,6 +110,38 @@ select {
     --combo-box-radius: var(--control-radius);
 }
 
+.common-toggle-switch {
+    --switch-border: var(--color-border);
+    --switch-bg: var(--color-surface);
+    --switch-text: var(--color-text);
+    --switch-radius: var(--control-radius);
+    --switch-yes-color: var(--color-primary);
+    --switch-no-color: var(--color-primary);
+    --switch-active-color: var(--color-primary);
+}
+
+.common-filter-panel {
+    --filter-panel-surface: var(--color-surface);
+    --filter-panel-text: var(--color-text);
+    --filter-panel-border: var(--color-border);
+    --filter-panel-hover: var(--color-surface-hover);
+    --filter-panel-primary: var(--color-primary);
+    --filter-panel-on-primary: var(--color-on-primary);
+    --filter-panel-control-radius: var(--control-radius);
+}
+
+.common-action-menu,
+.common-action-menu__list {
+    --action-menu-surface: var(--color-surface);
+    --action-menu-text: var(--color-text);
+    --action-menu-border: var(--color-border);
+    --action-menu-hover: var(--color-surface-hover);
+    --action-menu-primary: var(--color-primary);
+    --action-menu-danger: var(--color-danger);
+    --action-menu-radius: var(--control-radius);
+    --action-menu-list-radius: var(--control-radius);
+}
+
 .ui-input {
     color: var(--color-text);
     background-color: var(--color-background);
@@ -118,7 +154,7 @@ select {
     border-color: var(--color-border);
 }
 
-.ui-button:hover {
+.ui-button:hover:not(.ui-button--primary):not(.ui-button--danger):not(:disabled) {
     background-color: var(--color-surface-hover);
 }
 
@@ -128,10 +164,24 @@ select {
     border-color: var(--color-primary);
 }
 
+.ui-button--primary:hover:not(:disabled) {
+    color: var(--color-on-primary);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    filter: brightness(0.92);
+}
+
 .ui-button--danger {
     color: var(--color-on-primary);
     background-color: var(--color-danger);
     border-color: var(--color-danger);
+}
+
+.ui-button--danger:hover:not(:disabled) {
+    color: var(--color-on-primary);
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+    filter: brightness(0.92);
 }
 
 .ui-message--error {

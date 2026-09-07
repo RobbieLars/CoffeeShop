@@ -1,0 +1,183 @@
+.common-toggle-switch-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.common-toggle-switch-wrapper--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.common-toggle-switch__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text, inherit);
+  cursor: pointer;
+}
+
+.common-toggle-switch {
+  --switch-height: 2.25rem;
+  --switch-width: 5.5rem;
+  --switch-border: var(--color-border, currentColor);
+  --switch-bg: var(--color-surface, transparent);
+  --switch-text: var(--color-text, inherit);
+  --switch-radius: var(--control-radius, 4px);
+  --switch-yes-color: var(--color-success, currentColor);
+  --switch-no-color: var(--color-danger, currentColor);
+  --switch-active-color: var(--color-primary, currentColor);
+  --switch-block-size: calc(var(--switch-height) - 0.5rem - 3px);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--switch-height);
+  width: var(--switch-width);
+  min-width: var(--switch-width);
+  padding: 0.25rem;
+  background-color: var(--switch-bg);
+  border: 1.5px solid var(--switch-border);
+  border-radius: var(--switch-radius);
+  color: var(--switch-text);
+  font: inherit;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: 
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.common-toggle-switch,
+.common-toggle-switch * {
+  box-sizing: border-box;
+}
+
+.common-toggle-switch:hover:not(:disabled) {
+  border-color: var(--switch-active-color);
+}
+
+.common-toggle-switch:focus-visible {
+  outline: 2px solid var(--switch-active-color);
+  outline-offset: 2px;
+}
+
+.common-toggle-switch:disabled {
+  cursor: not-allowed;
+}
+
+.common-toggle-switch:active:not(:disabled) .common-toggle-switch__block {
+  transform: scale(0.92);
+}
+
+/* Bloque móvil con transición deslizante suave */
+.common-toggle-switch__block {
+  position: absolute;
+  top: 0.25rem;
+  width: var(--switch-block-size);
+  height: var(--switch-block-size);
+  border-radius: calc(var(--switch-radius) * 0.6);
+  z-index: 2;
+  transition: 
+    left 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.25s ease,
+    transform 0.15s ease;
+}
+
+/* Posición cuando SI: bloque a la izquierda */
+.common-toggle-switch--checked .common-toggle-switch__block,
+.common-toggle-switch--yes .common-toggle-switch__block {
+  left: 0.25rem;
+  background-color: var(--switch-yes-color);
+}
+
+/* Posición cuando NO: bloque a la derecha */
+.common-toggle-switch--unchecked .common-toggle-switch__block,
+.common-toggle-switch--no .common-toggle-switch__block {
+  left: calc(100% - var(--switch-block-size) - 0.25rem);
+  background-color: var(--switch-no-color);
+}
+
+/* Divisor vertical móvil */
+.common-toggle-switch__divider {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5px;
+  height: 1.5rem;
+  background-color: var(--switch-border);
+  z-index: 1;
+  transition: 
+    left 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s ease;
+}
+
+/* Divisor en SI: a la derecha del bloque izquierdo */
+.common-toggle-switch--checked .common-toggle-switch__divider,
+.common-toggle-switch--yes .common-toggle-switch__divider {
+  left: calc(0.25rem + var(--switch-block-size) + 0.35rem);
+}
+
+/* Divisor en NO: a la izquierda del bloque derecho */
+.common-toggle-switch--unchecked .common-toggle-switch__divider,
+.common-toggle-switch--no .common-toggle-switch__divider {
+  left: calc(100% - var(--switch-block-size) - 0.25rem - 0.35rem - 1.5px);
+}
+
+/* Slots de texto */
+.common-toggle-switch__slot {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--switch-text);
+  user-select: none;
+  pointer-events: none;
+  transition: 
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s ease;
+}
+
+/* Slot izquierdo: Texto "NO" */
+.common-toggle-switch__slot--left {
+  left: 0.25rem;
+  width: calc(100% - var(--switch-block-size) - 0.75rem);
+}
+
+.common-toggle-switch--checked .common-toggle-switch__slot--left,
+.common-toggle-switch--yes .common-toggle-switch__slot--left {
+  opacity: 0;
+  transform: translateX(-0.35rem);
+}
+
+.common-toggle-switch--unchecked .common-toggle-switch__slot--left,
+.common-toggle-switch--no .common-toggle-switch__slot--left {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slot derecho: Texto "SI" */
+.common-toggle-switch__slot--right {
+  right: 0.25rem;
+  width: calc(100% - var(--switch-block-size) - 0.75rem);
+}
+
+.common-toggle-switch--checked .common-toggle-switch__slot--right,
+.common-toggle-switch--yes .common-toggle-switch__slot--right {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.common-toggle-switch--unchecked .common-toggle-switch__slot--right,
+.common-toggle-switch--no .common-toggle-switch__slot--right {
+  opacity: 0;
+  transform: translateX(0.35rem);
+}

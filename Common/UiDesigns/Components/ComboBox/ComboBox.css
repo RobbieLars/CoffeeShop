@@ -83,6 +83,21 @@
   background: var(--combo-box-surface);
   border: 1px solid var(--combo-box-border);
   border-radius: var(--combo-box-radius);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  animation: commonPopupSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top center;
+  will-change: transform, opacity;
+}
+
+@keyframes commonPopupSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .common-combo-box__search-area {
@@ -100,6 +115,7 @@
 }
 
 .common-combo-box__search-input {
+  display: block;
   width: 100%;
   min-height: 2.25rem;
   padding: 0.5rem 0.75rem;
@@ -108,6 +124,15 @@
   border: 1px solid var(--combo-box-border);
   border-radius: var(--combo-box-radius);
   font: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.common-combo-box__search-input:focus,
+.common-combo-box__search-input:focus-visible {
+  outline: none;
+  border-color: var(--combo-box-primary);
+  box-shadow: 0 0 0 3px var(--combo-box-focus);
 }
 
 .common-combo-box__search-types {
@@ -150,6 +175,16 @@
   cursor: pointer;
 }
 
+.common-combo-box__option--empty > button {
+  color: var(--combo-box-muted, inherit);
+  opacity: 0.85;
+  border-bottom: 1px solid var(--combo-box-border, currentColor);
+}
+
+.common-combo-box__option--empty:hover > button {
+  opacity: 1;
+}
+
 .common-combo-box__message {
   padding: 1rem 0.75rem;
   text-align: center;
@@ -188,23 +223,44 @@
   cursor: not-allowed;
 }
 
-.common-combo-box__option > button:hover,
-.common-combo-box__search-type:hover,
-.common-combo-box__pagination button:hover:not(:disabled) {
+.common-combo-box__option:not(.common-combo-box__option--selected) > button:hover {
   background: var(--combo-box-hover);
+  color: var(--combo-box-primary);
+}
+
+.common-combo-box__option--empty:not(.common-combo-box__option--selected) > button:hover {
+  background: var(--combo-box-hover);
+  color: var(--combo-box-primary);
+  opacity: 1;
+}
+
+.common-combo-box__search-type:hover:not(.common-combo-box__search-type--active),
+.common-combo-box__pagination button:hover:not(:disabled):not(.common-combo-box__page--active) {
+  background: var(--combo-box-hover);
+  color: var(--combo-box-primary);
 }
 
 .common-combo-box__option--selected > button,
 .common-combo-box__search-type--active,
 .common-combo-box__page--active {
-  color: var(--combo-box-on-primary);
-  background: var(--combo-box-primary);
-  border-color: var(--combo-box-primary);
+  color: var(--combo-box-on-primary) !important;
+  background-color: var(--combo-box-primary) !important;
+  border-color: var(--combo-box-primary) !important;
+  font-weight: 600;
+  opacity: 1 !important;
+}
+
+.common-combo-box__option--selected > button:hover,
+.common-combo-box__search-type--active:hover,
+.common-combo-box__page--active:hover {
+  color: var(--combo-box-on-primary) !important;
+  background-color: var(--combo-box-primary) !important;
+  filter: brightness(0.93);
+  opacity: 1 !important;
 }
 
 .common-combo-box__trigger:focus-visible,
 .common-combo-box__clear:focus-visible,
-.common-combo-box__search-input:focus-visible,
 .common-combo-box__search-type:focus-visible,
 .common-combo-box__option > button:focus-visible,
 .common-combo-box__pagination button:focus-visible {

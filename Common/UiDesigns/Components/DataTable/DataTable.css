@@ -1,7 +1,36 @@
+/* ==========================================================================
+   NIVEL 1: Layout Azul (Contenedor Exterior Responsive)
+   - Responsive en anchura x alto: se ajusta a la pantalla.
+   - Si sobrepasa el tamaño de la pantalla, corta un poco antes del borde inferior
+     sin alargarse de más ni forzar el scroll de toda la ventana.
+   - Si solo hay 1 registro (o pocos registros), no se alarga artificialmente:
+     se adapta con precisión a la altura natural de su contenido.
+   - Mantiene la barra de herramientas arriba y la paginación fija abajo.
+   ========================================================================== */
 .common-data-table {
+  --data-table-bottom-offset: 1.5rem;
+  --data-table-max-height: calc(100vh - 16rem);
+  --data-table-background: transparent;
+  --data-table-header-background: transparent;
+  --data-table-control-background: transparent;
+  --data-table-row-hover: transparent;
+  --data-table-text: inherit;
+  --data-table-muted: inherit;
+  --data-table-border: currentColor;
+  --data-table-primary: currentColor;
+  --data-table-on-primary: inherit;
+  --data-table-focus: transparent;
+  --data-table-control-radius: var(--control-radius, 4px);
+
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  color: var(--data-table-text, inherit);
-  background-color: var(--data-table-background, transparent);
+  max-width: 100%;
+  min-width: 0;
+  max-height: var(--data-table-max-height-dynamic, var(--data-table-max-height));
+  color: var(--data-table-text);
+  background-color: var(--data-table-background);
+  box-sizing: border-box;
 }
 
 .common-data-table *,
@@ -16,6 +45,7 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .common-data-table__search {
@@ -46,23 +76,93 @@
   color: var(--data-table-muted, inherit);
 }
 
-.common-data-table__container {
+/* ==========================================================================
+   NIVEL 2: Layout Rojo (Contenedor Interior de Registros)
+   - Contiene la tabla con todas las filas de datos.
+   - Si los registros sobrepasan la altura de pantalla, genera scroll interno
+     vertical (y horizontal si las columnas exceden el ancho).
+   - Encabezado sticky (fijo arriba) durante el desplazamiento vertical.
+   ========================================================================== */
+.common-data-table__container,
+.common-data-table__records-container {
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid var(--data-table-border, currentColor);
+  border-radius: var(--data-table-radius, var(--panel-radius, var(--control-radius, 6px)));
+  scrollbar-width: thin;
+  scrollbar-color: var(--data-table-border, rgba(156, 163, 175, 0.5)) transparent;
+}
+
+/* Scrollbars modernos y limpios */
+.common-data-table__container::-webkit-scrollbar,
+.common-data-table__records-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.common-data-table__container::-webkit-scrollbar-track,
+.common-data-table__records-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.common-data-table__container::-webkit-scrollbar-thumb,
+.common-data-table__records-container::-webkit-scrollbar-thumb {
+  background: var(--data-table-border, rgba(156, 163, 175, 0.4));
+  border-radius: 3px;
+}
+
+.common-data-table__container::-webkit-scrollbar-thumb:hover,
+.common-data-table__records-container::-webkit-scrollbar-thumb:hover {
+  background: var(--data-table-muted, rgba(156, 163, 175, 0.7));
 }
 
 .common-data-table__table {
   width: 100%;
   color: var(--data-table-text, inherit);
   background-color: var(--data-table-background, transparent);
-  border: 1px solid var(--data-table-border, currentColor);
-  border-collapse: collapse;
+  border: 0;
+  border-collapse: separate;
   border-spacing: 0;
 }
 
-.common-data-table__table thead {
+/* Esquinas redondeadas en el encabezado superior */
+.common-data-table__table thead tr:first-child th:first-child {
+  border-top-left-radius: calc(var(--data-table-radius, var(--panel-radius, var(--control-radius, 6px))) - 1px);
+}
+
+.common-data-table__table thead tr:first-child th:last-child {
+  border-top-right-radius: calc(var(--data-table-radius, var(--panel-radius, var(--control-radius, 6px))) - 1px);
+}
+
+/* Esquinas redondeadas en la última fila */
+.common-data-table__table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: calc(var(--data-table-radius, var(--panel-radius, var(--control-radius, 6px))) - 1px);
+}
+
+.common-data-table__table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: calc(var(--data-table-radius, var(--panel-radius, var(--control-radius, 6px))) - 1px);
+}
+
+/* Encabezado fijo (Sticky Header) */
+.common-data-table--sticky-header .common-data-table__table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   background-color:
     var(--data-table-header-background, transparent);
+}
+
+.common-data-table--sticky-header .common-data-table__table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color:
+    var(--data-table-header-background, inherit);
+  box-shadow: inset 0 -1px 0 var(--data-table-border, currentColor);
 }
 
 .common-data-table__table th,
@@ -73,6 +173,11 @@
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
+}
+
+/* Evitar doble borde en la última fila con border-collapse: separate */
+.common-data-table__table tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .common-data-table__body {
@@ -128,12 +233,14 @@
   white-space: normal;
 }
 
+/* Pie de tabla / Paginación siempre visible en el Nivel 1 */
 .common-data-table__footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   margin-top: 1rem;
+  flex-shrink: 0;
 }
 
 .common-data-table__page-size,
@@ -144,6 +251,113 @@
   gap: 0.5rem;
 }
 
+/* Selector personalizado de filas por página */
+.common-data-table__page-size-select {
+  position: relative;
+  display: inline-flex;
+}
+
+.common-data-table__page-size-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 4.25rem;
+  min-height: 2.25rem;
+  padding: 0.375rem 0.625rem;
+  color: var(--data-table-text);
+  background-color: var(--data-table-control-background);
+  border: 1px solid var(--data-table-border);
+  border-radius: var(--data-table-control-radius);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: 
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.common-data-table__page-size-trigger:hover,
+.common-data-table__page-size-select--open .common-data-table__page-size-trigger {
+  border-color: var(--data-table-primary);
+  background-color: var(--data-table-row-hover);
+}
+
+.common-data-table__page-size-trigger:focus-visible {
+  outline: 2px solid var(--data-table-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px var(--data-table-focus);
+}
+
+.common-data-table__page-size-chevron {
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+.common-data-table__page-size-menu {
+  position: absolute;
+  bottom: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 50;
+  min-width: 100%;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background-color: var(--data-table-control-background);
+  border: 1px solid var(--data-table-border);
+  border-radius: var(--data-table-control-radius);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  animation: pageSizeMenuSlideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom center;
+  will-change: transform, opacity;
+}
+
+@keyframes pageSizeMenuSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.common-data-table__page-size-item {
+  margin: 0;
+  padding: 0;
+}
+
+.common-data-table__page-size-item > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: 0;
+  border-radius: calc(var(--data-table-control-radius) * 0.7);
+  background-color: transparent;
+  color: var(--data-table-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.common-data-table__page-size-item > button:hover {
+  background-color: var(--data-table-row-hover);
+}
+
+.common-data-table__page-size-item--selected > button {
+  background-color: var(--data-table-primary) !important;
+  color: var(--data-table-on-primary) !important;
+  font-weight: 600;
+}
+
 .common-data-table__page-size select {
   min-height: 2.25rem;
   padding: 0.375rem 0.625rem;
@@ -151,7 +365,7 @@
   background-color:
     var(--data-table-control-background, transparent);
   border: 1px solid var(--data-table-border, currentColor);
-  border-radius: var(--data-table-control-radius, 0);
+  border-radius: var(--data-table-control-radius, var(--control-radius, 4px));
   font: inherit;
 }
 
@@ -166,7 +380,7 @@
   background-color:
     var(--data-table-control-background, transparent);
   border: 1px solid var(--data-table-border, currentColor);
-  border-radius: var(--data-table-control-radius, 0);
+  border-radius: var(--data-table-control-radius, var(--control-radius, 4px));
   font: inherit;
   cursor: pointer;
   transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
@@ -220,5 +434,166 @@
 
   .common-data-table__pagination {
     flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   MODO TARJETAS (CARD VIEW) RESPONSIVE
+   - En pantallas grandes (> 768px): oculto (display: none).
+   - En tablets (500px - 768px): cuadrícula de 2 columnas (2 en 2).
+   - En móviles (< 500px): cuadrícula de 1 columna (1 en 1).
+   ========================================================================== */
+
+.common-data-table__cards {
+  display: none;
+}
+
+.common-data-table__cards-message {
+  grid-column: 1 / -1;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--data-table-muted, inherit);
+  font-size: 0.95rem;
+}
+
+.common-data-table__card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--data-table-background, transparent);
+  border: 1px solid var(--data-table-border, currentColor);
+  border-radius: var(--data-table-control-radius, var(--control-radius, 6px));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.common-data-table__card:hover {
+  border-color: var(--data-table-primary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.common-data-table__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background-color: var(--data-table-header-background, rgba(0, 0, 0, 0.03));
+  border-bottom: 1px solid var(--data-table-border, currentColor);
+}
+
+.common-data-table__card-header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.common-data-table__card-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 14rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: calc(var(--data-table-control-radius, var(--control-radius, 4px)) * 0.7);
+  background-color: var(--data-table-control-background, transparent);
+  border: 1px solid var(--data-table-border, currentColor);
+  color: var(--data-table-primary, currentColor);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.common-data-table__card-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.common-data-table__card-actions-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--data-table-muted, inherit);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.common-data-table__card-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0.875rem;
+}
+
+.common-data-table__card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.common-data-table__card-field-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--data-table-muted, inherit);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.common-data-table__card-field-value {
+  display: flex;
+  align-items: center;
+  min-height: 2.125rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.875rem;
+  color: var(--data-table-text, inherit);
+  background-color: var(--data-table-control-background, transparent);
+  border: 1px solid var(--data-table-border, currentColor);
+  border-radius: calc(var(--data-table-control-radius, var(--control-radius, 4px)) * 0.8);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Breakpoint Tablet (≤ 991.98px): La tabla pasa a modo Tarjetas (2 en 2 si hay buen ancho de tablet) */
+@media (max-width: 991.98px) {
+  .common-data-table__table {
+    display: none !important;
+  }
+
+  .common-data-table__cards {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    animation: tableFadeTransition 0.22s ease-out;
+  }
+}
+
+/* Breakpoint ≤ 768px (incluye 663px y teléfonos): Tarjetas de 1 en 1 para vista cómoda */
+@media (max-width: 768px) {
+  .common-data-table__cards {
+    grid-template-columns: 1fr !important;
+    gap: 0.875rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Pantallas pequeñas (≤ 420px): Campos internos de la tarjeta a 1 columna */
+@media (max-width: 420px) {
+  .common-data-table__card-body {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
   }
 }

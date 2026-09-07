@@ -61,49 +61,13 @@
 }
 
 .pet-view__action-list {
-    position: absolute;
-    top: calc(100% + 0.375rem);
-    right: 0;
-    z-index: 20;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     min-width: 10rem;
     padding: 0.375rem;
     border-width: 1px;
     border-style: solid;
     border-radius: var(--control-radius);
-    animation: actionMenuSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transform-origin: top right;
-    will-change: transform, opacity;
-}
-
-@keyframes actionMenuSlideDown {
-    0% {
-        opacity: 0;
-        transform: translateY(-6px) scale(0.96);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes actionMenuSlideUp {
-    0% {
-        opacity: 0;
-        transform: translateY(6px) scale(0.96);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.common-data-table__table tbody tr:nth-last-child(-n + 2)
-    .pet-view__action-list {
-    top: auto;
-    bottom: calc(100% + 0.375rem);
-    animation-name: actionMenuSlideUp;
-    transform-origin: bottom right;
 }
 
 .pet-view__action-item {

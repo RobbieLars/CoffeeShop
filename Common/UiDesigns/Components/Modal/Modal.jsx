@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
 
 import "./Modal.css";
@@ -36,6 +36,23 @@ export function Modal({
   const resolvedTitleId =
     titleId ?? `common-modal-title-${generatedId}`;
 
+  const [mounted, setMounted] = useState(open);
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      setIsClosing(false);
+    } else if (mounted) {
+      setIsClosing(true);
+      const timer = setTimeout(() => {
+        setMounted(false);
+        setIsClosing(false);
+      }, 180);
+      return () => clearTimeout(timer);
+    }
+  }, [open, mounted]);
+
   const {
     dialogRef,
     requestClose,
@@ -47,7 +64,7 @@ export function Modal({
     closeOnEscape,
   });
 
-  if (!open || typeof document === "undefined") {
+  if (!mounted || typeof document === "undefined") {
     return null;
   }
 
@@ -55,6 +72,7 @@ export function Modal({
     <div
       className={joinClassNames(
         "common-modal__backdrop",
+        isClosing && "common-modal__backdrop--closing",
         backdropClassName
       )}
       onPointerDown={handleBackdropPointerDown}
@@ -70,6 +88,7 @@ export function Modal({
         tabIndex={-1}
         className={joinClassNames(
           "common-modal",
+          isClosing && "common-modal--closing",
           className
         )}
         style={style}

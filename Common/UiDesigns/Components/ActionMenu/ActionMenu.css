@@ -1,0 +1,149 @@
+.common-action-menu,
+.common-action-menu__list {
+  --action-menu-surface: var(--color-surface, transparent);
+  --action-menu-text: var(--color-text, inherit);
+  --action-menu-border: var(--color-border, currentColor);
+  --action-menu-hover: var(--color-surface-hover, transparent);
+  --action-menu-primary: var(--color-primary, currentColor);
+  --action-menu-danger: var(--color-danger, currentColor);
+  --action-menu-radius: var(--control-radius, 4px);
+  --action-menu-list-radius: var(--control-radius, 6px);
+  --action-menu-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.common-action-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.common-action-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--action-menu-radius);
+  color: var(--action-menu-text);
+  background-color: var(--action-menu-surface);
+  border-color: var(--action-menu-border);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: 
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.common-action-menu__trigger:hover:not(:disabled),
+.common-action-menu__trigger--active {
+  border-color: var(--action-menu-primary);
+  background-color: var(--action-menu-hover);
+}
+
+.common-action-menu__trigger:focus-visible {
+  outline: 2px solid var(--action-menu-primary);
+  outline-offset: 2px;
+}
+
+.common-action-menu__trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 
+ * Menú emergente (portal): 
+ * Flota fuera de la tabla, renderizado directamente en document.body
+ */
+.common-action-menu__list {
+  display: flex;
+  flex-direction: column;
+  min-width: 10rem;
+  padding: 0.375rem;
+  background-color: var(--action-menu-surface);
+  color: var(--action-menu-text);
+  border: 1px solid var(--action-menu-border);
+  border-radius: var(--action-menu-list-radius);
+  box-shadow: var(--action-menu-shadow);
+  box-sizing: border-box;
+}
+
+.common-action-menu__list * {
+  box-sizing: border-box;
+}
+
+.common-action-menu__list--bottom {
+  animation: commonActionMenuSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top right;
+  will-change: transform, opacity;
+}
+
+.common-action-menu__list--top {
+  animation: commonActionMenuSlideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom right;
+  will-change: transform, opacity;
+}
+
+@keyframes commonActionMenuSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes commonActionMenuSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.common-action-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: calc(var(--action-menu-radius) * 0.7);
+  background-color: transparent;
+  color: var(--action-menu-text);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.common-action-menu__item:hover:not(:disabled),
+.common-action-menu__item:focus-visible {
+  background-color: var(--action-menu-hover);
+  outline: none;
+}
+
+.common-action-menu__item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.common-action-menu__item--danger {
+  color: var(--action-menu-danger);
+}
+
+.common-action-menu__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+}

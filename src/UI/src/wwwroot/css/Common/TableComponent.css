@@ -12,41 +12,6 @@
     --data-table-control-radius: var(--control-radius);
 }
 
-.ui-action-menu__trigger,
-.ui-action-menu__list {
-    color: var(--color-text);
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-}
-
-.ui-action-menu__list {
-    box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.24);
-    animation: actionMenuSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transform-origin: top right;
-    will-change: transform, opacity;
-}
-
-.ui-action-menu__item {
-    color: var(--color-text);
-    background-color: transparent;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.ui-action-menu__trigger:hover,
-.ui-action-menu__item:hover,
-.ui-action-menu__item:focus-visible {
-    background-color: var(--color-surface-hover);
-}
-
-.ui-action-menu__trigger:focus-visible,
-.ui-action-menu__item:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-}
-
-.ui-action-menu__item--danger {
-    color: var(--color-danger);
-}
 
 .ui-notification {
     color: var(--color-text);

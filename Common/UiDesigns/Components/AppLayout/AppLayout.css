@@ -283,7 +283,21 @@
   border: 1px solid var(--app-layout-border);
   border-radius: calc(var(--app-layout-control-radius) + 2px);
   background: var(--app-layout-surface);
-  box-shadow: var(--app-layout-dropdown-shadow);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  animation: commonProfileMenuSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top right;
+  will-change: transform, opacity;
+}
+
+@keyframes commonProfileMenuSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .common-top-header__profile-info {

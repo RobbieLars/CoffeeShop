@@ -89,3 +89,30 @@
     justify-content: center;
 }
 
+/* Menú dinámico - En modo oscuro, la página activa resalta en blanco puro fuerte */
+:root[data-theme='dark'] .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__button,
+:root[data-theme='dark'] .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__link,
+:root:not([data-theme='light']) .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__button,
+:root:not([data-theme='light']) .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__link {
+    color: #ffffff;
+}
+
+:root[data-theme='dark'] .coffeeshop-menu .multilevel-menu__item--active .multilevel-menu__label,
+:root:not([data-theme='light']) .coffeeshop-menu .multilevel-menu__item--active .multilevel-menu__label {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+:root[data-theme='dark'] .coffeeshop-menu .multilevel-menu__item--active .multilevel-menu__icon,
+:root:not([data-theme='light']) .coffeeshop-menu .multilevel-menu__item--active .multilevel-menu__icon {
+    color: var(--color-primary);
+}
+
+:root[data-theme='dark'] .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__button:hover,
+:root[data-theme='dark'] .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__link:hover,
+:root:not([data-theme='light']) .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__button:hover,
+:root:not([data-theme='light']) .coffeeshop-menu .multilevel-menu__item--active > .multilevel-menu__link:hover {
+    color: #ffffff;
+    background: var(--color-surface-hover);
+}
+

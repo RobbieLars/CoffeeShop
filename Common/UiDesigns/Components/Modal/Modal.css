@@ -35,12 +35,26 @@
   animation: commonModalFadeIn 0.2s ease-out forwards;
 }
 
+.common-modal__backdrop--closing {
+  animation: commonModalFadeOut 0.18s ease-in forwards !important;
+  pointer-events: none;
+}
+
 @keyframes commonModalFadeIn {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes commonModalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
@@ -55,9 +69,25 @@
   }
 }
 
+@keyframes commonModalZoomOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.96);
+  }
+}
+
 .common-modal,
 .common-modal * {
   box-sizing: border-box;
+}
+
+.common-modal--closing {
+  animation: commonModalZoomOut 0.18s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+  pointer-events: none;
 }
 
 .common-modal {

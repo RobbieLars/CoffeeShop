@@ -30,6 +30,9 @@ export function ComboBox({
   getOptionLabel = defaultGetOptionLabel,
   renderOption,
   placeholder = "Seleccione una opción",
+  emptyOption = true,
+  emptyOptionLabel,
+  emptyOptionValue = null,
   searchable = false,
   searchPlaceholder = "Buscar",
   searchTypes = [],
@@ -57,6 +60,38 @@ export function ComboBox({
   const searchInputRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
 
+  const resolvedEmptyLabel =
+    emptyOptionLabel ?? placeholder ?? "Seleccione una opción";
+
+  const resolvedOptions = useMemo(() => {
+    const rawOptions = Array.isArray(options) ? options : [];
+    if (!emptyOption) return rawOptions;
+
+    // Check if options already includes an empty / null / "" option
+    const hasExistingEmpty = rawOptions.some((option) => {
+      const val = getOptionValue(option);
+      return val === null || val === undefined || val === "";
+    });
+
+    if (hasExistingEmpty) {
+      return rawOptions;
+    }
+
+    const defaultEmptyItem = {
+      value: emptyOptionValue,
+      label: resolvedEmptyLabel,
+      __isDefaultEmpty: true,
+    };
+
+    return [defaultEmptyItem, ...rawOptions];
+  }, [
+    options,
+    emptyOption,
+    emptyOptionValue,
+    resolvedEmptyLabel,
+    getOptionValue,
+  ]);
+
   const {
     search,
     setSearch,
@@ -71,8 +106,11 @@ export function ComboBox({
     goToPreviousPage,
     goToNextPage,
   } = useComboBox({
-    options,
-    getOptionLabel,
+    options: resolvedOptions,
+    getOptionLabel: (option) =>
+      option?.__isDefaultEmpty
+        ? resolvedEmptyLabel
+        : getOptionLabel(option),
     searchable,
     searchTypes,
     initialSearchType,
@@ -85,13 +123,36 @@ export function ComboBox({
       ? getOptionValue(value)
       : value;
 
-  const selectedOption = useMemo(
-    () =>
-      options.find((option) =>
-        Object.is(getOptionValue(option), selectedValue)
-      ) ?? null,
-    [getOptionValue, options, selectedValue]
-  );
+  const isValueEmpty =
+    selectedValue === null ||
+    selectedValue === undefined ||
+    selectedValue === "";
+
+  const selectedOption = useMemo(() => {
+    if (isValueEmpty) {
+      return (
+        resolvedOptions.find((option) => {
+          if (option?.__isDefaultEmpty) return true;
+          const val = getOptionValue(option);
+          return val === null || val === undefined || val === "";
+        }) ?? null
+      );
+    }
+
+    return (
+      resolvedOptions.find((option) => {
+        const optionVal = getOptionValue(option);
+        return (
+          Object.is(optionVal, selectedValue) ||
+          (optionVal !== null &&
+            optionVal !== undefined &&
+            selectedValue !== null &&
+            selectedValue !== undefined &&
+            String(optionVal) === String(selectedValue))
+        );
+      }) ?? null
+    );
+  }, [getOptionValue, isValueEmpty, resolvedOptions, selectedValue]);
 
   useEffect(() => {
     if (!expanded) return undefined;
@@ -125,7 +186,11 @@ export function ComboBox({
   };
 
   const selectOption = (option) => {
-    onChange?.(option);
+    if (option?.__isDefaultEmpty) {
+      onChange?.(null);
+    } else {
+      onChange?.(option);
+    }
     setExpanded(false);
     triggerRef.current?.focus();
   };
@@ -186,7 +251,7 @@ export function ComboBox({
           onClick={toggleExpanded}
         >
           <span className="common-combo-box__selected-value">
-            {selectedOption
+            {selectedOption && !selectedOption.__isDefaultEmpty
               ? getOptionLabel(selectedOption)
               : placeholder}
           </span>
@@ -229,19 +294,13 @@ export function ComboBox({
                 className="common-combo-box__search-input"
                 value={search}
                 placeholder={searchPlaceholder}
-                onChange={(event) =>
-                  setSearch(event.target.value)
-                }
+                onChange={(event) => setSearch(event.target.value)}
               />
             </div>
           )}
 
-          {searchable && availableSearchTypes.length > 0 && (
-            <div
-              className="common-combo-box__search-types"
-              role="group"
-              aria-label="Tipo de búsqueda"
-            >
+          {availableSearchTypes.length > 1 && (
+            <div className="common-combo-box__search-types">
               {availableSearchTypes.map((searchTypeOption) => (
                 <button
                   key={searchTypeOption.id}
@@ -285,18 +344,29 @@ export function ComboBox({
             {!loading &&
               visibleOptions.map((option, index) => {
                 const optionValue = getOptionValue(option);
-                const selected = Object.is(
-                  optionValue,
-                  selectedValue
-                );
+                const isOptionEmpty =
+                  option?.__isDefaultEmpty ||
+                  optionValue === null ||
+                  optionValue === undefined ||
+                  optionValue === "";
+
+                const selected = isValueEmpty
+                  ? isOptionEmpty
+                  : Object.is(optionValue, selectedValue) ||
+                    (optionValue !== null &&
+                      optionValue !== undefined &&
+                      selectedValue !== null &&
+                      selectedValue !== undefined &&
+                      String(optionValue) === String(selectedValue));
 
                 return (
                   <li
-                    key={String(optionValue ?? index)}
+                    key={String(optionValue ?? `empty-${index}`)}
                     role="option"
                     aria-selected={selected}
                     className={joinClassNames(
                       "common-combo-box__option",
+                      isOptionEmpty && "common-combo-box__option--empty",
                       selected &&
                         "common-combo-box__option--selected"
                     )}
@@ -305,8 +375,11 @@ export function ComboBox({
                       type="button"
                       onClick={() => selectOption(option)}
                     >
-                      {typeof renderOption === "function"
+                      {typeof renderOption === "function" &&
+                      !option?.__isDefaultEmpty
                         ? renderOption(option, selected)
+                        : option?.__isDefaultEmpty
+                        ? resolvedEmptyLabel
                         : getOptionLabel(option)}
                     </button>
                   </li>
@@ -339,9 +412,7 @@ export function ComboBox({
                         "common-combo-box__page--active"
                     )}
                     aria-current={
-                      page === currentPage
-                        ? "page"
-                        : undefined
+                      page === currentPage ? "page" : undefined
                     }
                     onClick={() => goToPage(page)}
                   >

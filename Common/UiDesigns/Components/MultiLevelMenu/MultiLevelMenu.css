@@ -1,11 +1,11 @@
 .multilevel-menu {
-  /* Valores base. Cada sistema puede reemplazarlos desde su propia clase. */
-  --menu-primary: #2e37a4;
-  --menu-heading: #0a1b39;
-  --menu-text: #6c7688;
-  --menu-border: #e4e7ec;
-  --menu-background: #ffffff;
-  --menu-hover: #f5f6f8;
+  /* Valores base agnósticos. Cada sistema (la carpa) los personaliza mediante CSS custom properties. */
+  --menu-primary: currentColor;
+  --menu-heading: inherit;
+  --menu-text: inherit;
+  --menu-border: currentColor;
+  --menu-background: transparent;
+  --menu-hover: transparent;
   --menu-disabled-opacity: 0.5;
   --menu-font-size: 14px;
   --menu-icon-size: 16px;

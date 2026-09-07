@@ -6,10 +6,13 @@ import {
 } from 'react';
 
 import {
+    ActionMenu,
     ComboBox,
     DataTable,
+    FilterPanel,
     Modal,
-    PageContainer
+    PageContainer,
+    ToggleSwitch
 } from '@common-ui';
 
 import ViewModelFieldHelper
@@ -68,111 +71,32 @@ function PetActionsMenu({
     onEdit,
     onDelete
 }) {
-    const menuRef = useRef(null);
-    const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        if (!open) {
-            return undefined;
-        }
-
-        const closeOnOutsideClick = (event) => {
-            if (!menuRef.current?.contains(event.target)) {
-                setOpen(false);
-            }
-        };
-
-        const closeOnEscape = (event) => {
-            if (event.key === 'Escape') {
-                setOpen(false);
-            }
-        };
-
-        document.addEventListener('pointerdown', closeOnOutsideClick);
-        document.addEventListener('keydown', closeOnEscape);
-
-        return () => {
-            document.removeEventListener(
-                'pointerdown',
-                closeOnOutsideClick
-            );
-
-            document.removeEventListener('keydown', closeOnEscape);
-        };
-    }, [open]);
-
-    const runAction = (action) => {
-        setOpen(false);
-        action();
-    };
-
     return (
-        <div
-            ref={menuRef}
+        <ActionMenu
+            ariaLabel={`Acciones para ${pet.name}`}
             className="pet-view__action-menu"
-        >
-            <button
-                type="button"
-                className={
-                    'pet-view__action-trigger ' +
-                    'ui-action-menu__trigger'
+            triggerClassName="pet-view__action-trigger"
+            menuClassName="pet-view__action-list"
+            itemClassName="pet-view__action-item"
+            items={[
+                {
+                    id: 'edit',
+                    label: 'Editar',
+                    onClick: onEdit
+                },
+                {
+                    id: 'detail',
+                    label: 'Detalles',
+                    onClick: onDetail
+                },
+                {
+                    id: 'delete',
+                    label: 'Eliminar',
+                    danger: true,
+                    onClick: onDelete
                 }
-                aria-label={`Acciones para ${pet.name}`}
-                aria-haspopup="menu"
-                aria-expanded={open}
-                onClick={() => setOpen((current) => !current)}
-            >
-                <span aria-hidden="true">⋮</span>
-            </button>
-
-            {open && (
-                <div
-                    className={
-                        'pet-view__action-list ' +
-                        'ui-action-menu__list'
-                    }
-                    role="menu"
-                    aria-label={`Acciones para ${pet.name}`}
-                >
-                    <button
-                        type="button"
-                        className={
-                            'pet-view__action-item ' +
-                            'ui-action-menu__item'
-                        }
-                        role="menuitem"
-                        onClick={() => runAction(onEdit)}
-                    >
-                        Editar
-                    </button>
-
-                    <button
-                        type="button"
-                        className={
-                            'pet-view__action-item ' +
-                            'ui-action-menu__item'
-                        }
-                        role="menuitem"
-                        onClick={() => runAction(onDetail)}
-                    >
-                        Detalles
-                    </button>
-
-                    <button
-                        type="button"
-                        className={
-                            'pet-view__action-item ' +
-                            'ui-action-menu__item ' +
-                            'ui-action-menu__item--danger'
-                        }
-                        role="menuitem"
-                        onClick={() => runAction(onDelete)}
-                    >
-                        Eliminar
-                    </button>
-                </div>
-            )}
-        </div>
+            ]}
+        />
     );
 }
 
@@ -315,9 +239,11 @@ function PetsView({
                 </button>
             )}
         >
-            <form
-                className="pet-view__filters"
+            <FilterPanel
+                onClear={view.clearFilters}
                 onSubmit={view.applyFilters}
+                clearLabel="Limpiar"
+                filterLabel="Filtrar"
             >
                 <FilterInput
                     fieldName="name"
@@ -378,24 +304,7 @@ function PetsView({
                         view.setFilter('privacy', value)
                     }
                 />
-
-                <div className="pet-view__filter-actions">
-                    <button
-                        type="button"
-                        className="pet-view__button ui-button"
-                        onClick={view.clearFilters}
-                    >
-                        Limpiar
-                    </button>
-
-                    <button
-                        type="submit"
-                        className="pet-view__button ui-button ui-button--primary"
-                    >
-                        Filtrar
-                    </button>
-                </div>
-            </form>
+            </FilterPanel>
 
             {view.error && (
                 <div
@@ -533,10 +442,10 @@ function FilterComboBox({
             value={value}
             options={options}
             searchable
-            clearable
+            clearable={false}
             searchTypes={searchTypes}
             onChange={(option) =>
-                onChange(option?.value ?? '')
+                onChange(option ? (option.value ?? null) : null)
             }
         />
     );
@@ -616,19 +525,18 @@ function PetForm({
             )}
 
             {'privacy' in viewModel && (
-                <label className="pet-form__checkbox">
-                    <input
-                        type="checkbox"
+                <div className="pet-form__field">
+                    <ToggleSwitch
+                        id="pet-form-privacy"
+                        label={labels.privacy}
                         checked={Boolean(viewModel.privacy)}
-                        onChange={(event) =>
-                            onFieldChange(
-                                'privacy',
-                                event.target.checked
-                            )
+                        onChange={(checked) =>
+                            onFieldChange('privacy', checked)
                         }
+                        yesLabel="SI"
+                        noLabel="NO"
                     />
-                    <span>{labels.privacy}</span>
-                </label>
+                </div>
             )}
         </form>
     );
