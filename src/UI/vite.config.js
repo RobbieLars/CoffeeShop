@@ -17,6 +17,27 @@ const petMockServicePath = fileURLToPath(
     )
 );
 
+const productMockServicePath = fileURLToPath(
+    new URL(
+        '../Application/Mock/AsyncServices/ProductMockService.js',
+        import.meta.url
+    )
+);
+
+const commentMockServicePath = fileURLToPath(
+    new URL(
+        '../Application/Mock/AsyncServices/CommentMockService.js',
+        import.meta.url
+    )
+);
+
+const purchaseMockServicePath = fileURLToPath(
+    new URL(
+        '../Application/Mock/AsyncServices/PurchaseMockService.js',
+        import.meta.url
+    )
+);
+
 export default defineConfig(({ mode }) => {
     const environment = loadEnv(mode, process.cwd(), '');
 
@@ -25,12 +46,20 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@common-ui': commonUiPath,
-                '@coffeeshop/pet-mock-service': petMockServicePath
+                '@coffeeshop/pet-mock-service': petMockServicePath,
+                '@coffeeshop/product-mock-service': productMockServicePath,
+                '@coffeeshop/comment-mock-service': commentMockServicePath,
+                '@coffeeshop/purchase-mock-service': purchaseMockServicePath
             },
             dedupe: ['react', 'react-dom']
         },
         optimizeDeps: {
-            include: ['@coffeeshop/pet-mock-service']
+            include: [
+                '@coffeeshop/pet-mock-service',
+                '@coffeeshop/product-mock-service',
+                '@coffeeshop/comment-mock-service',
+                '@coffeeshop/purchase-mock-service'
+            ]
         },
         server: {
             port: 5176,

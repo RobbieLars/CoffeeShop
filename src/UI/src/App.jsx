@@ -12,6 +12,10 @@ import PurchasesView from './Views/Purchases/PurchasesView';
 
 import { PAGE_KEYS, pageRegistry } from './config/pageRegistry';
 import { petController } from './config/PetComposition';
+import { productController } from './config/ProductComposition';
+import { commentController } from './config/CommentComposition';
+import { purchaseController } from './config/PurchaseComposition';
+
 const routeBuilder = new DashboardRouteBuilder(pageRegistry);
 const dashboardBuilder = new DashboardBuilder(routeBuilder);
 const dashboardController = new DashboardController(dashboardBuilder);
@@ -128,13 +132,13 @@ function App() {
     const renderActiveContent = () => {
         switch (activePath) {
             case '/products':
-                return <ProductsView />;
+                return <ProductsView controller={productController} />;
             case '/pets':
                 return <PetsView controller={petController} />;
             case '/comments':
-                return <CommentsView />;
+                return <CommentsView controller={commentController} />;
             case '/purchases':
-                return <PurchasesView />;
+                return <PurchasesView controller={purchaseController} />;
             case '/':
             default:
                 return <DashboardContentView />;
