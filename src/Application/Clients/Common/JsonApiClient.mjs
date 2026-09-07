@@ -1,8 +1,37 @@
 import ApiClientError from './ApiClientError.mjs';
 
+function resolveEnvBaseUrl() {
+    try {
+        if (typeof import.meta !== 'undefined' && import.meta?.env) {
+            return (
+                import.meta.env.VITE_API_URL ||
+                import.meta.env.VITE_API_BASE_URL ||
+                ''
+            );
+        }
+    } catch {
+        // Ignorar si import.meta no está disponible
+    }
+
+    try {
+        if (typeof process !== 'undefined' && process?.env) {
+            return (
+                process.env.VITE_API_URL ||
+                process.env.VITE_API_BASE_URL ||
+                process.env.API_URL ||
+                ''
+            );
+        }
+    } catch {
+        // Ignorar si process no está disponible
+    }
+
+    return '';
+}
+
 class JsonApiClient {
     constructor({
-        baseUrl = '',
+        baseUrl = null,
         fetchImplementation = globalThis.fetch?.bind(globalThis)
     } = {}) {
         if (typeof fetchImplementation !== 'function') {
@@ -11,7 +40,11 @@ class JsonApiClient {
             );
         }
 
-        this._baseUrl = String(baseUrl).replace(/\/$/, '');
+        const rawBaseUrl = baseUrl !== null && baseUrl !== undefined
+            ? baseUrl
+            : resolveEnvBaseUrl();
+
+        this._baseUrl = String(rawBaseUrl).replace(/\/$/, '');
         this._fetch = fetchImplementation;
     }
 
@@ -97,8 +130,13 @@ class JsonApiClient {
 
         const queryString = searchParams.toString();
 
+        let baseUrl = this._baseUrl;
+        if (baseUrl.endsWith('/api') && normalizedAddress.startsWith('/api')) {
+            baseUrl = baseUrl.slice(0, -4);
+        }
+
         return (
-            `${this._baseUrl}${normalizedAddress}` +
+            `${baseUrl}${normalizedAddress}` +
             (queryString ? `?${queryString}` : '')
         );
     }

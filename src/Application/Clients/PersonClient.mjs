@@ -1,6 +1,6 @@
 import JsonApiClient from './Common/JsonApiClient.mjs';
 
-class PurchaseClient {
+class PersonClient {
     constructor({ baseUrl, apiClient = null } = {}) {
         this._apiClient = apiClient ?? new JsonApiClient({ baseUrl });
     }
@@ -10,7 +10,7 @@ class PurchaseClient {
         pageSize = 5,
         filters = {}
     } = {}) {
-        return this._apiClient.GetAsync('/api/purchase', {
+        return this._apiClient.GetAsync('/api/person', {
             page,
             pageSize,
             ...filters
@@ -18,23 +18,23 @@ class PurchaseClient {
     }
 
     async GetByIdAsync(id) {
-        return this._apiClient.GetAsync(`/api/purchase/${id}`);
+        return this._apiClient.GetAsync(`/api/person/${id}`);
     }
 
-    async CreateAsync(createPurchaseDto) {
-        return this._apiClient.PostAsync('/api/purchase', createPurchaseDto);
+    async CreateAsync(createPersonDto) {
+        return this._apiClient.PostAsync('/api/person', createPersonDto);
     }
 
-    async UpdateAsync(id, updatePurchaseDto) {
+    async UpdateAsync(id, updatePersonDto) {
         return this._apiClient.PutAsync(
-            `/api/purchase/${id}`,
-            updatePurchaseDto
+            `/api/person/${id}`,
+            updatePersonDto
         );
     }
 
     async HardDeleteAsync(id) {
-        return this._apiClient.DeleteAsync(`/api/purchase/${id}`);
+        return this._apiClient.DeleteAsync(`/api/person/${id}`);
     }
 }
 
-export default PurchaseClient;
+export default PersonClient;

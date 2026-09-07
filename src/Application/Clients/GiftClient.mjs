@@ -1,6 +1,6 @@
 import JsonApiClient from './Common/JsonApiClient.mjs';
 
-class PetClient {
+class GiftClient {
     constructor({ baseUrl, apiClient = null } = {}) {
         this._apiClient = apiClient ?? new JsonApiClient({ baseUrl });
     }
@@ -10,7 +10,7 @@ class PetClient {
         pageSize = 5,
         filters = {}
     } = {}) {
-        return this._apiClient.GetAsync('/api/pet', {
+        return this._apiClient.GetAsync('/api/gift', {
             page,
             pageSize,
             ...filters
@@ -18,30 +18,30 @@ class PetClient {
     }
 
     async GetByIdAsync(id) {
-        return this._apiClient.GetAsync(`/api/pet/${id}`);
+        return this._apiClient.GetAsync(`/api/gift/${id}`);
     }
 
-    async CreateAsync(createPetDto) {
-        return this._apiClient.PostAsync('/api/pet', createPetDto);
+    async CreateAsync(createGiftDto) {
+        return this._apiClient.PostAsync('/api/gift', createGiftDto);
     }
 
-    async UpdateAsync(id, updatePetDto) {
+    async UpdateAsync(id, updateGiftDto) {
         return this._apiClient.PutAsync(
-            `/api/pet/${id}`,
-            updatePetDto
+            `/api/gift/${id}`,
+            updateGiftDto
         );
     }
 
-    async PatchOwnerAsync(id, patchPetOwnerDto) {
+    async PatchReceivedAsync(id, updateReceivedDto) {
         return this._apiClient.PatchAsync(
-            `/api/pet/${id}/owner`,
-            patchPetOwnerDto
+            `/api/gift/${id}/received`,
+            updateReceivedDto
         );
     }
 
     async HardDeleteAsync(id) {
-        return this._apiClient.DeleteAsync(`/api/pet/hard/${id}`);
+        return this._apiClient.DeleteAsync(`/api/gift/${id}`);
     }
 }
 
-export default PetClient;
+export default GiftClient;

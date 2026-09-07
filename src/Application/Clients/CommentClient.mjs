@@ -10,7 +10,7 @@ class CommentClient {
         pageSize = 5,
         filters = {}
     } = {}) {
-        return this._apiClient.GetAsync('/comment', {
+        return this._apiClient.GetAsync('/api/comment', {
             page,
             pageSize,
             ...filters
@@ -18,29 +18,29 @@ class CommentClient {
     }
 
     async GetByIdAsync(id) {
-        return this._apiClient.GetAsync(`/comment/${id}`);
+        return this._apiClient.GetAsync(`/api/comment/${id}`);
     }
 
     async CreateAsync(createCommentDto) {
-        return this._apiClient.PostAsync('/comment', createCommentDto);
+        return this._apiClient.PostAsync('/api/comment', createCommentDto);
     }
 
     async UpdateAsync(id, updateCommentDto) {
         return this._apiClient.PutAsync(
-            `/comment/${id}`,
+            `/api/comment/${id}`,
             updateCommentDto
         );
     }
 
     async PatchMessageAsync(id, patchCommentMessageDto) {
         return this._apiClient.PatchAsync(
-            `/comment/${id}/message`,
+            `/api/comment/${id}/message`,
             patchCommentMessageDto
         );
     }
 
     async HardDeleteAsync(id) {
-        return this._apiClient.DeleteAsync(`/comment/hard/${id}`);
+        return this._apiClient.DeleteAsync(`/api/comment/hard/${id}`);
     }
 }
 

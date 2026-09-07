@@ -1,0 +1,9 @@
+export { default as JsonApiClient } from './Common/JsonApiClient.mjs';
+export { default as PetClient } from './PetClient.mjs';
+export { default as ProductClient } from './ProductClient.mjs';
+export { default as CommentClient } from './CommentClient.mjs';
+export { default as PurchaseClient } from './PurchaseClient.mjs';
+export { default as UserClient } from './UserClient.mjs';
+export { default as PersonClient } from './PersonClient.mjs';
+export { default as RoleClient } from './RoleClient.mjs';
+export { default as GiftClient } from './GiftClient.mjs';

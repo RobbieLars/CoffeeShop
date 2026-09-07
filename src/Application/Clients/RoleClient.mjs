@@ -1,6 +1,6 @@
 import JsonApiClient from './Common/JsonApiClient.mjs';
 
-class ProductClient {
+class RoleClient {
     constructor({ baseUrl, apiClient = null } = {}) {
         this._apiClient = apiClient ?? new JsonApiClient({ baseUrl });
     }
@@ -10,7 +10,7 @@ class ProductClient {
         pageSize = 5,
         filters = {}
     } = {}) {
-        return this._apiClient.GetAsync('/api/product', {
+        return this._apiClient.GetAsync('/api/role', {
             page,
             pageSize,
             ...filters
@@ -18,34 +18,34 @@ class ProductClient {
     }
 
     async GetByIdAsync(id) {
-        return this._apiClient.GetAsync(`/api/product/${id}`);
+        return this._apiClient.GetAsync(`/api/role/${id}`);
     }
 
-    async CreateAsync(createProductDto) {
-        return this._apiClient.PostAsync('/api/product', createProductDto);
+    async CreateAsync(createRoleDto) {
+        return this._apiClient.PostAsync('/api/role', createRoleDto);
     }
 
-    async UpdateAsync(id, updateProductDto) {
+    async UpdateAsync(id, updateRoleDto) {
         return this._apiClient.PutAsync(
-            `/api/product/${id}`,
-            updateProductDto
+            `/api/role/${id}`,
+            updateRoleDto
         );
     }
 
     async PatchEnabledAsync(id, commonEnabledDto) {
         return this._apiClient.PatchAsync(
-            `/api/product/${id}/enabled`,
+            `/api/role/${id}/enabled`,
             commonEnabledDto
         );
     }
 
     async SoftDeleteAsync(id) {
-        return this._apiClient.DeleteAsync(`/api/product/${id}`);
+        return this._apiClient.DeleteAsync(`/api/role/${id}`);
     }
 
     async HardDeleteAsync(id) {
-        return this._apiClient.DeleteAsync(`/api/product/hard/${id}`);
+        return this._apiClient.DeleteAsync(`/api/role/hard/${id}`);
     }
 }
 
-export default ProductClient;
+export default RoleClient;
