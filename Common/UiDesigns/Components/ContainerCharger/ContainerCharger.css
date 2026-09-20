@@ -1,0 +1,175 @@
+/**
+ * ContainerCharger.css - Estructura y Variables del Contenedor de Recarga
+ * Ubicación: Common/UiDesigns/Components/ContainerCharger/ContainerCharger.css
+ */
+
+.common-container-charger {
+  /* Variables estructurales del componente */
+  --charger-min-height: 80px;
+  --charger-radius: var(--panel-radius, 8px);
+  --charger-bar-height: 3px;
+  --charger-bar-track-bg: rgba(239, 68, 68, 0.16);
+  --charger-line-color: var(--color-danger, #ef4444);
+  --charger-transition-speed: 0.25s;
+
+  /* Tokens visuales del contenedor y badges */
+  --charger-bg: transparent;
+  --charger-badge-bg: var(--color-surface, #ffffff);
+  --charger-badge-text: var(--color-text-muted, #64748b);
+  --charger-badge-border: var(--color-border, rgba(0, 0, 0, 0.1));
+  --charger-badge-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  /* Tokens visuales de error */
+  --charger-error-bg: rgba(239, 68, 68, 0.06);
+  --charger-error-border: rgba(239, 68, 68, 0.35);
+  --charger-error-text: var(--color-danger, #ef4444);
+  --charger-retry-btn-bg: var(--color-surface, #ffffff);
+  --charger-retry-btn-color: var(--color-danger, #ef4444);
+  --charger-retry-btn-border: var(--color-danger, #ef4444);
+  --charger-retry-btn-hover-bg: var(--color-danger, #ef4444);
+  --charger-retry-btn-hover-color: #ffffff;
+
+  position: relative;
+  min-height: var(--charger-min-height);
+  border-radius: var(--charger-radius);
+  background-color: var(--charger-bg);
+  box-sizing: border-box;
+  transition: opacity var(--charger-transition-speed) ease;
+}
+
+.common-container-charger,
+.common-container-charger * {
+  box-sizing: border-box;
+}
+
+/* Barra animada de recarga superior (línea roja de carga) */
+.common-container-charger__bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--charger-bar-height);
+  background-color: var(--charger-bar-track-bg);
+  overflow: hidden;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  z-index: 15;
+}
+
+.common-container-charger__line {
+  width: 100%;
+  height: 100%;
+  background-color: var(--charger-line-color);
+  animation: commonContainerChargerPulse 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left;
+}
+
+@keyframes commonContainerChargerPulse {
+  0% {
+    transform: translateX(-100%) scaleX(0.25);
+  }
+  50% {
+    transform: translateX(0%) scaleX(0.7);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.25);
+  }
+}
+
+/* Reducción de interacción visual durante carga */
+.common-container-charger--loading .common-container-charger__body {
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity var(--charger-transition-speed) ease;
+}
+
+/* Caja de error aislada */
+.common-container-charger__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.875rem;
+  min-height: 140px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  background-color: var(--charger-error-bg);
+  border: 1px dashed var(--charger-error-border);
+  border-radius: var(--charger-radius);
+  color: var(--charger-error-text);
+}
+
+.common-container-charger__error-message {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.common-container-charger__error-icon {
+  font-size: 1.15rem;
+}
+
+.common-container-charger__retry-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--charger-retry-btn-color);
+  background-color: var(--charger-retry-btn-bg);
+  border: 1px solid var(--charger-retry-btn-border);
+  border-radius: var(--control-radius, 4px);
+  cursor: pointer;
+  transition: 
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.common-container-charger__retry-btn:hover {
+  color: var(--charger-retry-btn-hover-color);
+  background-color: var(--charger-retry-btn-hover-bg);
+}
+
+/* Badge flotante inferior durante carga */
+.common-container-charger__badge {
+  position: absolute;
+  bottom: 0.65rem;
+  right: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--charger-badge-text);
+  background-color: var(--charger-badge-bg);
+  border: 1px solid var(--charger-badge-border);
+  border-radius: var(--control-radius, 4px);
+  box-shadow: var(--charger-badge-shadow);
+  z-index: 20;
+}
+
+.common-container-charger__badge-spinner {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: commonContainerChargerSpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes commonContainerChargerSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

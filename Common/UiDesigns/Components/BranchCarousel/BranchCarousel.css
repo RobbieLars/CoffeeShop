@@ -1,0 +1,44 @@
+/**
+ * BranchCarousel.css - Estructura y Variables del Carrusel de Pasos
+ * Ubicación: Common/UiDesigns/Components/BranchCarousel/BranchCarousel.css
+ */
+
+.common-branch-carousel {
+  /* Variables estructurales del componente */
+  --branch-carousel-transition: transform 0.42s cubic-bezier(0.25, 1, 0.5, 1);
+  --branch-carousel-slide-padding: 0;
+  --branch-carousel-inactive-opacity: 0.25;
+  --branch-carousel-active-opacity: 1;
+
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.common-branch-carousel,
+.common-branch-carousel * {
+  box-sizing: border-box;
+}
+
+.common-branch-carousel__track {
+  display: flex;
+  width: 100%;
+  transition: var(--branch-carousel-transition);
+  will-change: transform;
+}
+
+.common-branch-carousel__slide {
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+  padding: var(--branch-carousel-slide-padding);
+  opacity: var(--branch-carousel-inactive-opacity);
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.common-branch-carousel__slide--active {
+  opacity: var(--branch-carousel-active-opacity);
+  pointer-events: auto;
+}

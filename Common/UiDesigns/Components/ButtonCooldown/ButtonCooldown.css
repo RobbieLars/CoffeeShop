@@ -1,0 +1,95 @@
+/**
+ * ButtonCooldown.css - Estructura y Variables del Botón con Cooldown
+ * Ubicación: Common/UiDesigns/Components/ButtonCooldown/ButtonCooldown.css
+ */
+
+.common-btn-cooldown {
+  /* Variables estructurales del componente con fallbacks configurables por el sistema */
+  --btn-cooldown-height: 2.375rem;
+  --btn-cooldown-padding: 0.5rem 1.125rem;
+  --btn-cooldown-radius: var(--control-radius, 4px);
+  --btn-cooldown-font-size: 0.875rem;
+  --btn-cooldown-font-weight: 500;
+  --btn-cooldown-font-family: inherit;
+  --btn-cooldown-spinner-size: 1rem;
+  --btn-cooldown-spinner-thickness: 2px;
+  --btn-cooldown-gap: 0.5rem;
+
+  /* Tokens visuales del botón (consumen variables del tema global) */
+  --btn-cooldown-bg: var(--color-primary, #4f46e5);
+  --btn-cooldown-color: var(--color-on-primary, #ffffff);
+  --btn-cooldown-border: transparent;
+  --btn-cooldown-hover-bg: var(--color-primary, #4338ca);
+  --btn-cooldown-focus-ring: var(--color-focus-ring, rgba(79, 70, 229, 0.25));
+  --btn-cooldown-disabled-opacity: 0.6;
+  --btn-cooldown-spinner-color: currentColor;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-cooldown-gap);
+  height: var(--btn-cooldown-height);
+  padding: var(--btn-cooldown-padding);
+  font-family: var(--btn-cooldown-font-family);
+  font-size: var(--btn-cooldown-font-size);
+  font-weight: var(--btn-cooldown-font-weight);
+  color: var(--btn-cooldown-color);
+  background-color: var(--btn-cooldown-bg);
+  border: 1px solid var(--btn-cooldown-border);
+  border-radius: var(--btn-cooldown-radius);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: 
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.common-btn-cooldown:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.common-btn-cooldown:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--btn-cooldown-focus-ring);
+}
+
+.common-btn-cooldown:disabled,
+.common-btn-cooldown--disabled {
+  opacity: var(--btn-cooldown-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.common-btn-cooldown--loading {
+  pointer-events: none;
+}
+
+.common-btn-cooldown__spinner {
+  display: inline-block;
+  width: var(--btn-cooldown-spinner-size);
+  height: var(--btn-cooldown-spinner-size);
+  border: var(--btn-cooldown-spinner-thickness) solid var(--btn-cooldown-spinner-color);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: commonBtnCooldownSpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.common-btn-cooldown__text,
+.common-btn-cooldown__content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+@keyframes commonBtnCooldownSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
