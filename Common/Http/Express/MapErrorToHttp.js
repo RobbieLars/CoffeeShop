@@ -6,7 +6,7 @@ const {
     UnauthorizedError,
     ForbiddenError,
     MaintenanceModeError
-} = require('../Errors/ApplicationErrors');
+} = require('../../Errors/ApplicationErrors');
 
 // Función para mapear errores personalizados a respuestas HTTP
 function MapErrorToHttp(error) {

@@ -1,21 +1,21 @@
 // Ejecuta llamadas externas y las convierte en resultados controlados.
 
 const IExternalCallExecutorService = require(
-    './IExternalCallExecutorService'
+    '../Interface/IExternalCallExecutorService'
 );
 const HttpClientException = require('./HttpClientException');
 
 const {
     ExternalCallResultDto,
     ExternalCallDetailedResultDto
-} = require('../DTOs/ExternalCallDto');
+} = require('../../DTOs/ExternalCallDto');
 
 const {
     ExternalCallStatus,
     ExternalCallResultType,
     ExternalCallErrorType,
     HttpMethod
-} = require('../Enum/ExternalCallEnum');
+} = require('../../Enum/ExternalCallEnum');
 
 class ExternalCallExecutorService extends IExternalCallExecutorService {
     constructor({ httpClientService } = {}) {

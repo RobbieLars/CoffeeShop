@@ -1,6 +1,6 @@
 // Implementación reutilizable de un cliente HTTP basado en fetch.
 
-const IHttpClientService = require('./IHttpClientService');
+const IHttpClientService = require('../Interface/IHttpClientService');
 const HttpClientException = require('./HttpClientException');
 
 class HttpClientService extends IHttpClientService {

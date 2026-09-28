@@ -13,6 +13,8 @@
     "./Helpers/*": "./Helpers/*.js",
     "./Http/*": "./Http/*.js",
     "./Http/Express/*": "./Http/Express/*.js",
+    "./Http/Interface/*": "./Http/Interface/*.js",
+    "./Http/Service/*": "./Http/Service/*.js",
     "./Services/*": "./Services/*.js",
     "./Security/*": "./Security/*.js",
     "./Specifications/*": "./Specifications/*.js",

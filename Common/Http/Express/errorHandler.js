@@ -1,7 +1,7 @@
 // errorHandler.js
 
 // Mapea errores personalizados a respuestas HTTP estándar y maneja errores no controlados en la API.
-const MapErrorToHttp = require('../MapErrorToHttp');
+const MapErrorToHttp = require('./MapErrorToHttp');
 const {
     MaintenanceModeError
 } = require('../../Errors/ApplicationErrors');
